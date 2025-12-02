@@ -1486,17 +1486,19 @@
         if (yearSelect) yearSelect.required = true;
       }
     
+      // -------------------- Attach handlers ให้ DEM item 1 ใบ --------------------
       function attachOtherFieldHandlers(item) {
         if (!item) return;
-    
+
+        // เรียกฟังก์ชันย่อยต่างๆ
         attachSectionToggles(item);
         markSectionARequired(item);
-    
+
         // ---- Tag Stack Helper ----
         function setupTagStack(selectEl, tagsContainer, hiddenInput) {
           if (!selectEl || !tagsContainer || !hiddenInput) return;
           let values = [];
-        
+
           function renderTags() {
             tagsContainer.innerHTML = "";
             values.forEach((val) => {
@@ -1511,21 +1513,21 @@
             });
             hiddenInput.value = values.join(", ");
           }
-        
+
           function addValue(val) {
             const v = (val || "").trim();
             if (!v || values.includes(v)) return;
             values.push(v);
             renderTags();
           }
-        
+
           function removeValue(val) {
             const idx = values.indexOf(val);
             if (idx === -1) return;
             values.splice(idx, 1);
             renderTags();
           }
-        
+
           // ดับเบิลคลิกที่ option เพื่อเพิ่มแท็ก
           selectEl.addEventListener("dblclick", () => {
             const opt = selectEl.options[selectEl.selectedIndex];
@@ -1537,40 +1539,33 @@
               addValue(text);
             }
           });
-        
-          // ⬇⬇⬇ แก้ส่วนนี้ใหม่: ให้ลบด้วยการคลิกที่กากบาท ⬇⬇⬇
+
+          // คลิกกากบาทเพื่อลบ
           tagsContainer.addEventListener("click", (e) => {
             const removeBtn = e.target.closest(".tag-remove");
             if (!removeBtn) return;
             e.preventDefault();
-            e.stopPropagation(); // กันไม่ให้ไปโดน checkbox ข้างหลัง
-        
+            e.stopPropagation();
             const pill = removeBtn.closest(".tag-pill");
             if (!pill) return;
             const v = pill.dataset.value;
             removeValue(v);
           });
         }
-    
+
         // ---- Search Filter Helper ----
         function setupSearchFilter(selectEl, searchInput) {
           if (!selectEl || !searchInput) return;
-        
+
           searchInput.addEventListener("input", () => {
             const term = searchInput.value.trim().toLowerCase();
-        
-            // ใช้ options ปัจจุบันทุกครั้ง (รองรับกรณี ref โหลดใหม่ / clone)
             const opts = Array.from(selectEl.options);
-        
             opts.forEach((opt, idx) => {
-              // สมมติ option แรกเป็น placeholder ให้โชว์ตลอด
               if (idx === 0 && opt.value === "") {
                 opt.hidden = false;
                 return;
               }
-        
               if (!term) {
-                // ถ้าไม่มีข้อความค้นหา → โชว์ทุก option
                 opt.hidden = false;
               } else {
                 const match = opt.textContent.toLowerCase().includes(term);
@@ -1579,7 +1574,7 @@
             });
           });
         }
-    
+
         // ---- Source (แหล่งที่มา) ----
         const sourceSelect = item.querySelector(".source-select");
         const sourceOtherWrapper = item.querySelector(".source-other-wrapper");
@@ -1597,7 +1592,7 @@
           sourceOtherWrapper.classList.toggle("hidden", !show);
           sourceOtherInput.disabled = !show;
         }
-    
+
         // ---- Resolution ----
         const resSelect = item.querySelector(".resolution-select");
         const resOtherWrapper = item.querySelector(".resolution-other-wrapper");
@@ -1614,7 +1609,7 @@
           resSelect.addEventListener("change", updateRes);
           updateRes();
         }
-    
+
         // ---- Vertical Datum ----
         const vDatumSelect = item.querySelector(".vertical-datum-select");
         const vDatumWrapper = item.querySelector(".vertical-datum-other-wrapper");
@@ -1630,7 +1625,7 @@
           vDatumSelect.addEventListener("change", updateVD);
           updateVD();
         }
-    
+
         // ---- Coordinate System ----
         const coordSelect = item.querySelector(".coord-select");
         const coordWrapper = item.querySelector(".coord-other-wrapper");
@@ -1646,7 +1641,7 @@
           coordSelect.addEventListener("change", updateCoord);
           updateCoord();
         }
-    
+
         // ---- License ----
         const licSelect = item.querySelector(".license-select");
         const licWrapper = item.querySelector(".license-other-wrapper");
@@ -1662,63 +1657,115 @@
           licSelect.addEventListener("change", updateLic);
           updateLic();
         }
-    
-        // ---- พื้นที่ครอบคลุม (เลือกทีละแบบ) ----
+
+        // ---- พื้นที่ครอบคลุม (Logic ใหม่: ไทยปิดหมด / ไม่ใช่ไทยเลือกได้หลายอัน) ----
         const coverageCountryCb = item.querySelector('input[name="coverageCountry[]"]');
         const basinToggle = item.querySelector(".toggle-basin");
         const provinceToggle = item.querySelector(".toggle-province");
         const localToggle = item.querySelector(".toggle-local");
-    
+
         const basinBlock = item.querySelector(".basin-block");
         const provinceBlock = item.querySelector(".province-block");
         const localBlock = item.querySelector(".local-block");
         const localInput = item.querySelector(".local-input");
-    
-// ---- ฟังก์ชัน updateCoverageGroup แบบใหม่ (แก้ไข Logic) ----
+        
+        // ตัวแปรสำหรับล้างค่า
+        const basinTags = item.querySelector(".basin-tags");
+        const basinHidden = item.querySelector(".basin-other-input");
+        const provinceTags = item.querySelector(".province-tags");
+        const provinceHidden = item.querySelector(".province-other-input");
+
         function updateCoverageGroup() {
           const isCountryChecked = coverageCountryCb && coverageCountryCb.checked;
 
-          // 1. กรณีเลือก "ประเทศไทยทั้งหมด"
           if (isCountryChecked) {
-            // บังคับปิด Toggle อื่นๆ และ Uncheck
+            // 1. กรณีเลือก "ประเทศไทยทั้งหมด" -> ปิดและล้างค่าอื่น
             if (basinToggle) { basinToggle.checked = false; basinToggle.disabled = true; }
             if (provinceToggle) { provinceToggle.checked = false; provinceToggle.disabled = true; }
             if (localToggle) { localToggle.checked = false; localToggle.disabled = true; }
 
-            // ซ่อนกล่องข้อมูลย่อย
             if (basinBlock) basinBlock.classList.add("hidden");
             if (provinceBlock) provinceBlock.classList.add("hidden");
             if (localBlock) localBlock.classList.add("hidden");
 
-            // *** สำคัญ: ล้างค่าข้อมูลข้างในเพื่อไม่ให้ส่งไปบันทึก ***
+            // ล้างค่า
             if (basinTags) basinTags.innerHTML = "";
             if (basinHidden) basinHidden.value = "";
             if (provinceTags) provinceTags.innerHTML = "";
             if (provinceHidden) provinceHidden.value = "";
             if (localInput) { localInput.value = ""; localInput.disabled = true; }
-
+            
           } else {
-            // 2. กรณี "ไม่เลือก" ประเทศไทย (เปิดให้เลือกอื่นๆ ได้อิสระ และเลือกพร้อมกันได้)
+            // 2. กรณี "ไม่เลือก" ประเทศไทย -> เปิดให้เลือกได้อิสระ
             if (basinToggle) basinToggle.disabled = false;
             if (provinceToggle) provinceToggle.disabled = false;
             if (localToggle) localToggle.disabled = false;
 
-            // แสดง/ซ่อน กล่องย่อย ตามสถานะของ toggle ตัวเอง (แยกกันอิสระ)
             if (basinBlock && basinToggle) {
-               basinBlock.classList.toggle("hidden", !basinToggle.checked);
+              basinBlock.classList.toggle("hidden", !basinToggle.checked);
             }
             if (provinceBlock && provinceToggle) {
-               provinceBlock.classList.toggle("hidden", !provinceToggle.checked);
+              provinceBlock.classList.toggle("hidden", !provinceToggle.checked);
             }
             if (localBlock && localInput && localToggle) {
-               const showLocal = localToggle.checked;
-               localBlock.classList.toggle("hidden", !showLocal);
-               localInput.disabled = !showLocal;
-               // ถ้าปิด local ให้ล้างค่า text ทิ้ง
-               if (!showLocal) localInput.value = ""; 
+              const showLocal = localToggle.checked;
+              localBlock.classList.toggle("hidden", !showLocal);
+              localInput.disabled = !showLocal;
+              if (!showLocal) localInput.value = "";
             }
           }
         }
+
+        if (coverageCountryCb) coverageCountryCb.addEventListener("change", updateCoverageGroup);
+        if (basinToggle) basinToggle.addEventListener("change", updateCoverageGroup);
+        if (provinceToggle) provinceToggle.addEventListener("change", updateCoverageGroup);
+        if (localToggle) localToggle.addEventListener("change", updateCoverageGroup);
+
+        // ---- Tag Stack ลุ่มน้ำ / จังหวัด ----
+        const basinSelect = item.querySelector(".basin-select");
+        const provinceSelect = item.querySelector(".province-select");
+        
+        setupTagStack(basinSelect, basinTags, basinHidden);
+        setupTagStack(provinceSelect, provinceTags, provinceHidden);
+
+        // ---- Search filter ----
+        const basinSearch = item.querySelector(".basin-search");
+        const provinceSearch = item.querySelector(".province-search");
+        setupSearchFilter(basinSelect, basinSearch);
+        setupSearchFilter(provinceSelect, provinceSearch);
+
+        // ---- ช่อง "อื่น ๆ" ที่ใช้ checkbox flag คุมการพิมพ์ ----
+        function setupOtherWithFlag(itm, flagName, inputName) {
+            const flag = itm.querySelector(`input[name="${flagName}"]`);
+            const input = itm.querySelector(`input[name="${inputName}"]`);
+            if (!flag || !input) return;
+            const update = () => {
+                const on = flag.checked;
+                input.disabled = !on;
+                if (!on) input.value = "";
+            };
+            flag.addEventListener("change", update);
+            update();
+        }
+
+        setupOtherWithFlag(item, "demMethodOtherFlag[]", "demMethodOther[]");
+        setupOtherWithFlag(item, "formatOtherFlag[]", "formatOther[]");
+        setupOtherWithFlag(item, "accessOtherFlag[]", "accessOther[]");
+        setupOtherWithFlag(item, "qcOtherFlag[]", "qcOther[]");
+        setupOtherWithFlag(item, "useOtherFlag[]", "useOther[]");
+
+        // ---- ปุ่มลบ DEM ----
+        const removeBtn = item.querySelector(".btn-remove-dem-item");
+        if (removeBtn) {
+          removeBtn.addEventListener("click", () => {
+            item.remove();
+            updateDemIndexes();
+          });
+        }
+
+        // เรียกครั้งแรกเพื่อจัด state เริ่มต้น
+        updateCoverageGroup();
+      }
     
       // -------------------- Init item แรก --------------------
       const firstItem = demContainer.querySelector(".dem-item");
