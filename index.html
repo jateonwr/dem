@@ -1194,13 +1194,14 @@
 
     <script>
       // ★★ ใส่ URL Web App ของ Apps Script ที่นี่ ★★
-      const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8Wf9vZsQbksaG7dmtWxw2b26xzCxI0Rl1lTlWggIS_rlULBL-wkOjDgRBZuH_vWI5Lw/exec";
+      const APPS_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbw8Wf9vZsQbksaG7dmtWxw2b26xzCxI0R1l.../exec";
     
       const demContainer = document.getElementById("demItemsContainer");
       const btnAddDemItem = document.getElementById("btnAddDemItem");
       const form = document.getElementById("demSurveyForm");
     
-      // -------------------- บังคับกรอก ส่วนที่ 1 (ข้อมูลหน่วยงาน) --------------------
+      // -------------------- ฟิลด์บังคับ ส่วนที่ 1 (ข้อมูลหน่วยงาน) --------------------
       const requiredAgencyIds = [
         "agencyName",
         "subUnit",
@@ -1209,9 +1210,51 @@
         "contactPhone",
         "contactEmail",
       ];
-      requiredAgencyIds.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.required = true;
+    
+      // -------------------- ฟังก์ชันจัดการ error --------------------
+      function clearValidationErrors() {
+        document
+          .querySelectorAll(".field-error-auto")
+          .forEach((el) => el.remove());
+        document.querySelectorAll(".error-border-auto").forEach((el) => {
+          el.classList.remove("error-border-auto");
+          el.style.borderColor = "";
+        });
+      }
+    
+      function showError(el, msg) {
+        if (!el) return;
+        el.classList.add("error-border-auto");
+        el.style.borderColor = "#dc2626";
+    
+        let container = el.parentElement;
+        if (!container) container = document.body;
+    
+        let err = container.querySelector(".field-error-auto");
+        if (!err) {
+          err = document.createElement("div");
+          err.className = "field-error-auto";
+          err.style.color = "#dc2626";
+          err.style.fontSize = "12px";
+          err.style.marginTop = "4px";
+          container.appendChild(err);
+        }
+        err.textContent = msg;
+      }
+    
+      function clearErrorForElement(el) {
+        if (!el) return;
+        el.classList.remove("error-border-auto");
+        el.style.borderColor = "";
+        const container = el.parentElement;
+        if (!container) return;
+        const err = container.querySelector(".field-error-auto");
+        if (err) err.remove();
+      }
+    
+      // ลบ error เมื่อเริ่มพิมพ์ใหม่
+      document.addEventListener("input", (e) => {
+        clearErrorForElement(e.target);
       });
     
       // -------------------- ฟอร์แมตและตรวจสอบเบอร์โทร --------------------
@@ -1219,32 +1262,37 @@
         const phoneInput = document.getElementById("contactPhone");
         if (!phoneInput) return;
     
-        function validatePhone() {
+        function validatePhoneDigits() {
           const digits = phoneInput.value.replace(/\D/g, "");
-          if (!digits) {
-            phoneInput.setCustomValidity("");
-            return;
-          }
-          if (digits.length !== 9 && digits.length !== 10) {
-            phoneInput.setCustomValidity("กรุณากรอกหมายเลขโทรศัพท์ 9 หรือ 10 หลัก (ไม่ต้องใส่ขีด)");
-          } else {
-            phoneInput.setCustomValidity("");
-          }
+          if (!digits) return true;
+          return digits.length === 9 || digits.length === 10;
         }
     
         function formatPhone() {
           const digits = phoneInput.value.replace(/\D/g, "");
           if (digits.length === 9) {
-            phoneInput.value = digits.replace(/^(\d{2})(\d{3})(\d{4})$/, "$1-$2-$3");
+            phoneInput.value = digits.replace(
+              /^(\d{2})(\d{3})(\d{4})$/,
+              "$1-$2-$3"
+            );
           } else if (digits.length === 10) {
-            phoneInput.value = digits.replace(/^(\d{3})(\d{3})(\d{4})$/, "$1-$2-$3");
+            phoneInput.value = digits.replace(
+              /^(\d{3})(\d{3})(\d{4})$/,
+              "$1-$2-$3"
+            );
           }
         }
     
-        phoneInput.addEventListener("input", validatePhone);
         phoneInput.addEventListener("blur", () => {
-          validatePhone();
-          formatPhone();
+          if (!validatePhoneDigits()) {
+            showError(
+              phoneInput,
+              "กรุณากรอกหมายเลขโทรศัพท์ 9 หรือ 10 หลัก (ไม่ต้องใส่ขีด)"
+            );
+          } else {
+            clearErrorForElement(phoneInput);
+            formatPhone();
+          }
         });
       })();
     
@@ -1257,6 +1305,7 @@
       let confirmCallback = null;
     
       function openConfirmModal(title, message, onConfirm) {
+        if (!confirmModal) return;
         confirmTitle.textContent = title;
         confirmMessage.textContent = message;
         confirmCallback = onConfirm;
@@ -1265,23 +1314,24 @@
       }
     
       function closeConfirmModal() {
+        if (!confirmModal) return;
         confirmModal.classList.add("hidden");
         confirmModal.classList.remove("flex");
         confirmCallback = null;
       }
     
-      confirmCancel.addEventListener("click", closeConfirmModal);
-      confirmOk.addEventListener("click", () => {
-        if (typeof confirmCallback === "function") {
-          confirmCallback();
-        }
-        closeConfirmModal();
-      });
-      confirmModal.addEventListener("click", (e) => {
-        if (e.target === confirmModal) {
+      if (confirmCancel) confirmCancel.addEventListener("click", closeConfirmModal);
+      if (confirmOk) {
+        confirmOk.addEventListener("click", () => {
+          if (typeof confirmCallback === "function") confirmCallback();
           closeConfirmModal();
-        }
-      });
+        });
+      }
+      if (confirmModal) {
+        confirmModal.addEventListener("click", (e) => {
+          if (e.target === confirmModal) closeConfirmModal();
+        });
+      }
     
       // -------------------- Success Modal --------------------
       const successModal = document.getElementById("successModal");
@@ -1299,18 +1349,13 @@
         successModal.classList.remove("flex");
       }
     
-      if (successOk) {
-        successOk.addEventListener("click", closeSuccessModal);
-      }
+      if (successOk) successOk.addEventListener("click", closeSuccessModal);
       if (successModal) {
         successModal.addEventListener("click", (e) => {
-          if (e.target === successModal) {
-            closeSuccessModal();
-          }
+          if (e.target === successModal) closeSuccessModal();
         });
       }
     
-      // ปิด modal ด้วย ESC (ทั้ง confirm + success)
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
           closeConfirmModal();
@@ -1325,16 +1370,14 @@
         const endBE = 2568;
     
         selects.forEach((sel) => {
-          // ถ้ามี option > 1 (มีข้อมูลแล้ว) ไม่ต้องเติมซ้ำ
-          if (sel.options.length > 1) return;
+          if (sel.dataset._filled === "1") return;
           for (let y = endBE; y >= startBE; y--) {
             const opt = document.createElement("option");
             opt.value = y;
             opt.textContent = y.toString();
             sel.appendChild(opt);
           }
-          // ให้ฟอนต์/ขนาดใกล้เคียงกับกล่องข้าง ๆ
-          sel.classList.add("text-sm");
+          sel.dataset._filled = "1";
         });
       }
     
@@ -1344,13 +1387,9 @@
         items.forEach((item, index) => {
           const idx = index + 1;
     
-          // เอา badge #1 ออก
           const badge = item.querySelector(".dem-index");
-          if (badge) {
-            badge.style.display = "none";
-          }
+          if (badge) badge.style.display = "none";
     
-          // ปรับข้อความ "ชุดข้อมูลที่ X" ให้ dynamic
           const header = item.querySelector("h3");
           if (header) {
             let titleSpan = header.querySelector(".dem-title-text");
@@ -1359,10 +1398,12 @@
               titleSpan.className = "dem-title-text";
               titleSpan.style.marginLeft = "4px";
     
-              // ลบ text node เดิมใน h3 (เช่น "ข้อมูลชุดที่ 1")
               const toRemove = [];
               header.childNodes.forEach((node) => {
-                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                if (
+                  node.nodeType === Node.TEXT_NODE &&
+                  node.textContent.trim()
+                ) {
                   toRemove.push(node);
                 }
               });
@@ -1385,14 +1426,19 @@
             } else {
               removeBtn.classList.remove("hidden");
             }
-            // ปรับปุ่มลบให้พื้นหลังแดง ตัวหนังสือขาว
-            removeBtn.classList.add("bg-rose-600", "text-white", "border", "border-rose-600", "hover:bg-rose-700");
+            removeBtn.classList.add(
+              "bg-rose-600",
+              "text-white",
+              "border",
+              "border-rose-600",
+              "hover:bg-rose-700"
+            );
             removeBtn.classList.remove("bg-white");
           }
         });
       }
     
-      // -------------------- แสดง/ซ่อน Section Card ในแต่ละ DEM --------------------
+      // -------------------- Section Toggle --------------------
       function setSectionVisibility(card, visible) {
         const body = card.querySelector(".section-body");
         const toggleBtn = card.querySelector(".section-toggle");
@@ -1412,7 +1458,7 @@
       function attachSectionToggles(item) {
         const cards = item.querySelectorAll(".section-card");
     
-        // เริ่มต้น: แสดงเฉพาะ A
+        // เริ่มต้น: แสดงแค่ A
         cards.forEach((card, idx) => {
           setSectionVisibility(card, idx === 0);
         });
@@ -1435,7 +1481,9 @@
           const refreshItemToggleState = () => {
             const innerCards = item.querySelectorAll(".section-card");
             const anyHidden = Array.from(innerCards).some((c) =>
-              c.querySelector(".section-body").classList.contains("hidden")
+              c
+                .querySelector(".section-body")
+                .classList.contains("hidden")
             );
             itemToggle.dataset.state = anyHidden ? "hidden" : "shown";
             if (labelAll) labelAll.textContent = anyHidden ? "แสดง" : "ซ่อน";
@@ -1468,11 +1516,16 @@
     
       function populateSelectOptions(selectEl, values) {
         if (!selectEl) return;
+    
+        // ถ้าไม่มีค่า reference เลย ไม่ต้องไปยุ่ง dropdown เดิม
+        if (!values || !values.length) return;
+    
         const currentSelected = Array.from(selectEl.options)
           .filter((o) => o.selected)
           .map((o) => o.value);
+    
         selectEl.innerHTML = "";
-        (values || []).forEach((val) => {
+        values.forEach((val) => {
           const opt = document.createElement("option");
           opt.value = val;
           opt.textContent = val;
@@ -1502,10 +1555,11 @@
           applyReferenceDataToAllItems();
         } catch (err) {
           console.error("getReferenceData error", err);
+          // ถ้า error dropdown จะใช้ option เดิมใน HTML ต่อ
         }
       }
     
-      // -------------------- Helper: อื่น ๆ + checkbox flag --------------------
+      // -------------------- Helper: ช่องอื่น ๆ ที่ควบด้วย checkbox flag --------------------
       function setupOtherWithFlag(item, flagName, inputName) {
         const flag = item.querySelector(`input[name="${flagName}"]`);
         const input = item.querySelector(`input[name="${inputName}"]`);
@@ -1514,169 +1568,180 @@
         const update = () => {
           const on = flag.checked;
           input.disabled = !on;
-          if (!on) input.value = "";
+          if (!on) {
+            input.value = "";
+            clearErrorForElement(input);
+          }
         };
     
         flag.addEventListener("change", update);
         update();
       }
     
-      // -------------------- Attach handlers ให้ DEM item 1 ใบ --------------------
+      // -------------------- Tag Stack + Search Filter --------------------
+      function setupTagStack(selectEl, tagsContainer, hiddenInput) {
+        if (!selectEl || !tagsContainer || !hiddenInput) return;
+        let values = [];
+    
+        function renderTags() {
+          tagsContainer.innerHTML = "";
+          values.forEach((val) => {
+            const span = document.createElement("span");
+            span.className = "tag-pill";
+            span.dataset.value = val;
+            span.innerHTML = `
+              <span class="tag-text">${val}</span>
+              <span class="tag-remove">×</span>
+            `;
+            tagsContainer.appendChild(span);
+          });
+          hiddenInput.value = values.join(", ");
+        }
+    
+        function addValue(val) {
+          const v = (val || "").trim();
+          if (!v || values.includes(v)) return;
+          values.push(v);
+          renderTags();
+        }
+    
+        function removeValue(val) {
+          const idx = values.indexOf(val);
+          if (idx === -1) return;
+          values.splice(idx, 1);
+          renderTags();
+        }
+    
+        selectEl.addEventListener("dblclick", () => {
+          const opt = selectEl.options[selectEl.selectedIndex];
+          const text = opt ? opt.textContent.trim() : "";
+          if (!text) return;
+          if (values.includes(text)) {
+            removeValue(text);
+          } else {
+            addValue(text);
+          }
+        });
+    
+        // ลบโดยคลิกที่กากบาท
+        tagsContainer.addEventListener("click", (e) => {
+          const removeBtn = e.target.closest(".tag-remove");
+          if (!removeBtn) return;
+          e.preventDefault();
+          e.stopPropagation();
+          const pill = removeBtn.closest(".tag-pill");
+          if (!pill) return;
+          const v = pill.dataset.value;
+          removeValue(v);
+        });
+      }
+    
+      function setupSearchFilter(selectEl, searchInput) {
+        if (!selectEl || !searchInput) return;
+    
+        searchInput.addEventListener("input", () => {
+          const term = searchInput.value.trim().toLowerCase();
+          const opts = Array.from(selectEl.options);
+    
+          opts.forEach((opt, idx) => {
+            if (idx === 0 && opt.value === "") {
+              opt.hidden = false;
+              return;
+            }
+            if (!term) {
+              opt.hidden = false;
+            } else {
+              const match = opt.textContent.toLowerCase().includes(term);
+              opt.hidden = !match;
+            }
+          });
+        });
+      }
+    
+      // -------------------- Mark ส่วน A required --------------------
       function markSectionARequired(item) {
         const demName = item.querySelector('input[name="demName[]"]');
-        const sourceSelect = item.querySelector('select[name="sourceType[]"]');
-        const yearSelect = item.querySelector('select[name="year[]"]');
+        const sourceSelect = item.querySelector(".source-select");
+        const yearSelect = item.querySelector(".year-select");
         if (demName) demName.required = true;
         if (sourceSelect) sourceSelect.required = true;
         if (yearSelect) yearSelect.required = true;
       }
     
+      // -------------------- Attach handlers ให้ DEM item 1 ใบ --------------------
       function attachOtherFieldHandlers(item) {
         if (!item) return;
     
         attachSectionToggles(item);
         markSectionARequired(item);
     
-        // ---- Tag Stack Helper ----
-        function setupTagStack(selectEl, tagsContainer, hiddenInput) {
-          if (!selectEl || !tagsContainer || !hiddenInput) return;
-          let values = [];
-        
-          function renderTags() {
-            tagsContainer.innerHTML = "";
-            values.forEach((val) => {
-              const span = document.createElement("span");
-              span.className = "tag-pill";
-              span.dataset.value = val;
-              span.innerHTML = `
-                <span class="tag-text">${val}</span>
-                <span class="tag-remove">×</span>
-              `;
-              tagsContainer.appendChild(span);
-            });
-            hiddenInput.value = values.join(", ");
-          }
-        
-          function addValue(val) {
-            const v = (val || "").trim();
-            if (!v || values.includes(v)) return;
-            values.push(v);
-            renderTags();
-          }
-        
-          function removeValue(val) {
-            const idx = values.indexOf(val);
-            if (idx === -1) return;
-            values.splice(idx, 1);
-            renderTags();
-          }
-        
-          // ดับเบิลคลิกที่ option เพื่อเพิ่มแท็ก
-          selectEl.addEventListener("dblclick", () => {
-            const opt = selectEl.options[selectEl.selectedIndex];
-            const text = opt ? opt.textContent.trim() : "";
-            if (!text) return;
-            if (values.includes(text)) {
-              removeValue(text);
-            } else {
-              addValue(text);
-            }
-          });
-        
-          // ⬇⬇⬇ แก้ส่วนนี้ใหม่: ให้ลบด้วยการคลิกที่กากบาท ⬇⬇⬇
-          tagsContainer.addEventListener("click", (e) => {
-            const removeBtn = e.target.closest(".tag-remove");
-            if (!removeBtn) return;
-            e.preventDefault();
-            e.stopPropagation(); // กันไม่ให้ไปโดน checkbox ข้างหลัง
-        
-            const pill = removeBtn.closest(".tag-pill");
-            if (!pill) return;
-            const v = pill.dataset.value;
-            removeValue(v);
-          });
-        }
-    
-        // ---- Search Filter Helper ----
-        function setupSearchFilter(selectEl, searchInput) {
-          if (!selectEl || !searchInput) return;
-        
-          searchInput.addEventListener("input", () => {
-            const term = searchInput.value.trim().toLowerCase();
-        
-            // ใช้ options ปัจจุบันทุกครั้ง (รองรับกรณี ref โหลดใหม่ / clone)
-            const opts = Array.from(selectEl.options);
-        
-            opts.forEach((opt, idx) => {
-              // สมมติ option แรกเป็น placeholder ให้โชว์ตลอด
-              if (idx === 0 && opt.value === "") {
-                opt.hidden = false;
-                return;
-              }
-        
-              if (!term) {
-                // ถ้าไม่มีข้อความค้นหา → โชว์ทุก option
-                opt.hidden = false;
-              } else {
-                const match = opt.textContent.toLowerCase().includes(term);
-                opt.hidden = !match;
-              }
-            });
-          });
-        }
-    
-        // ---- Source (แหล่งที่มา) ----
+        // Source
         const sourceSelect = item.querySelector(".source-select");
         const sourceOtherWrapper = item.querySelector(".source-other-wrapper");
         const sourceOtherInput = item.querySelector(".source-other-input");
         if (sourceSelect && sourceOtherWrapper && sourceOtherInput) {
-          sourceSelect.addEventListener("change", () => {
+          const updateSource = () => {
             const show = sourceSelect.value === "other";
             sourceOtherWrapper.classList.toggle("hidden", !show);
             sourceOtherInput.disabled = !show;
-            if (show) sourceOtherInput.focus();
-            else sourceOtherInput.value = "";
-          });
-          // initial
-          const show = sourceSelect.value === "other";
-          sourceOtherWrapper.classList.toggle("hidden", !show);
-          sourceOtherInput.disabled = !show;
+            if (show) {
+              sourceOtherInput.focus();
+            } else {
+              sourceOtherInput.value = "";
+              clearErrorForElement(sourceOtherInput);
+            }
+          };
+          sourceSelect.addEventListener("change", updateSource);
+          updateSource();
         }
     
-        // ---- Resolution ----
+        // Resolution
         const resSelect = item.querySelector(".resolution-select");
         const resOtherWrapper = item.querySelector(".resolution-other-wrapper");
         const resOtherInput = item.querySelector(".resolution-other-input");
         if (resSelect && resOtherWrapper && resOtherInput) {
           const updateRes = () => {
             const show =
-              resSelect.value === "lidar_sub1m" || resSelect.value === "other";
+              resSelect.value === "lidar_sub1m" ||
+              resSelect.value === "other";
             resOtherWrapper.classList.toggle("hidden", !show);
             resOtherInput.disabled = !show;
-            if (show) resOtherInput.focus();
-            else resOtherInput.value = "";
+            if (show) {
+              resOtherInput.focus();
+            } else {
+              resOtherInput.value = "";
+              clearErrorForElement(resOtherInput);
+            }
           };
           resSelect.addEventListener("change", updateRes);
           updateRes();
         }
     
-        // ---- Vertical Datum ----
+        // Vertical Datum
         const vDatumSelect = item.querySelector(".vertical-datum-select");
-        const vDatumWrapper = item.querySelector(".vertical-datum-other-wrapper");
-        const vDatumInput = item.querySelector(".vertical-datum-other-input");
+        const vDatumWrapper = item.querySelector(
+          ".vertical-datum-other-wrapper"
+        );
+        const vDatumInput = item.querySelector(
+          ".vertical-datum-other-input"
+        );
         if (vDatumSelect && vDatumWrapper && vDatumInput) {
           const updateVD = () => {
             const show = vDatumSelect.value === "other";
             vDatumWrapper.classList.toggle("hidden", !show);
             vDatumInput.disabled = !show;
-            if (show) vDatumInput.focus();
-            else vDatumInput.value = "";
+            if (show) {
+              vDatumInput.focus();
+            } else {
+              vDatumInput.value = "";
+              clearErrorForElement(vDatumInput);
+            }
           };
           vDatumSelect.addEventListener("change", updateVD);
           updateVD();
         }
     
-        // ---- Coordinate System ----
+        // Coordinate system
         const coordSelect = item.querySelector(".coord-select");
         const coordWrapper = item.querySelector(".coord-other-wrapper");
         const coordInput = item.querySelector(".coord-other-input");
@@ -1685,14 +1750,18 @@
             const show = coordSelect.value === "other";
             coordWrapper.classList.toggle("hidden", !show);
             coordInput.disabled = !show;
-            if (show) coordInput.focus();
-            else coordInput.value = "";
+            if (show) {
+              coordInput.focus();
+            } else {
+              coordInput.value = "";
+              clearErrorForElement(coordInput);
+            }
           };
           coordSelect.addEventListener("change", updateCoord);
           updateCoord();
         }
     
-        // ---- License ----
+        // License
         const licSelect = item.querySelector(".license-select");
         const licWrapper = item.querySelector(".license-other-wrapper");
         const licInput = item.querySelector(".license-other-input");
@@ -1701,15 +1770,21 @@
             const show = licSelect.value === "other";
             licWrapper.classList.toggle("hidden", !show);
             licInput.disabled = !show;
-            if (show) licInput.focus();
-            else licInput.value = "";
+            if (show) {
+              licInput.focus();
+            } else {
+              licInput.value = "";
+              clearErrorForElement(licInput);
+            }
           };
           licSelect.addEventListener("change", updateLic);
           updateLic();
         }
     
-        // ---- พื้นที่ครอบคลุม (เลือกทีละแบบ) ----
-        const coverageCountryCb = item.querySelector('input[name="coverageCountry[]"]');
+        // พื้นที่ครอบคลุม (เลือกทีละแบบ)
+        const coverageCountryCb = item.querySelector(
+          'input[name="coverageCountry[]"]'
+        );
         const basinToggle = item.querySelector(".toggle-basin");
         const provinceToggle = item.querySelector(".toggle-province");
         const localToggle = item.querySelector(".toggle-local");
@@ -1720,11 +1795,15 @@
         const localInput = item.querySelector(".local-input");
     
         function updateCoverageGroup() {
-          const cbs = [coverageCountryCb, basinToggle, provinceToggle, localToggle];
-          const selected = cbs.find((cb) => cb && cb.checked);
+          const cbs = [
+            coverageCountryCb,
+            basinToggle,
+            provinceToggle,
+            localToggle,
+          ].filter(Boolean);
+          const selected = cbs.find((cb) => cb.checked);
     
           cbs.forEach((cb) => {
-            if (!cb) return;
             if (selected && cb !== selected) {
               cb.checked = false;
               cb.disabled = true;
@@ -1743,24 +1822,21 @@
             const showLocal = localToggle.checked;
             localBlock.classList.toggle("hidden", !showLocal);
             localInput.disabled = !showLocal;
-            if (!showLocal) localInput.value = "";
+            if (!showLocal) {
+              localInput.value = "";
+              clearErrorForElement(localInput);
+            }
           }
         }
     
-        if (coverageCountryCb) {
-          coverageCountryCb.addEventListener("change", updateCoverageGroup);
-        }
-        if (basinToggle) {
-          basinToggle.addEventListener("change", updateCoverageGroup);
-        }
-        if (provinceToggle) {
-          provinceToggle.addEventListener("change", updateCoverageGroup);
-        }
-        if (localToggle) {
-          localToggle.addEventListener("change", updateCoverageGroup);
-        }
+        [coverageCountryCb, basinToggle, provinceToggle, localToggle]
+          .filter(Boolean)
+          .forEach((cb) =>
+            cb.addEventListener("change", updateCoverageGroup)
+          );
+        updateCoverageGroup();
     
-        // ---- Tag Stack ลุ่มน้ำ / จังหวัด ----
+        // Tag stack + search
         const basinSelect = item.querySelector(".basin-select");
         const basinTags = item.querySelector(".basin-tags");
         const basinHidden = item.querySelector(".basin-other-input");
@@ -1771,20 +1847,23 @@
         const provinceHidden = item.querySelector(".province-other-input");
         setupTagStack(provinceSelect, provinceTags, provinceHidden);
     
-        // ---- Search filter ----
         const basinSearch = item.querySelector(".basin-search");
         setupSearchFilter(basinSelect, basinSearch);
         const provinceSearch = item.querySelector(".province-search");
         setupSearchFilter(provinceSelect, provinceSearch);
     
-        // ---- ช่อง "อื่น ๆ" ที่ใช้ checkbox flag คุมการพิมพ์ ----
-        setupOtherWithFlag(item, "demMethodOtherFlag[]", "demMethodOther[]");
+        // ช่อง "อื่น ๆ" ที่ควบด้วย checkbox flag
+        setupOtherWithFlag(
+          item,
+          "demMethodOtherFlag[]",
+          "demMethodOther[]"
+        );
         setupOtherWithFlag(item, "formatOtherFlag[]", "formatOther[]");
         setupOtherWithFlag(item, "accessOtherFlag[]", "accessOther[]");
         setupOtherWithFlag(item, "qcOtherFlag[]", "qcOther[]");
         setupOtherWithFlag(item, "useOtherFlag[]", "useOther[]");
     
-        // ---- ปุ่มลบ DEM ----
+        // ปุ่มลบ DEM
         const removeBtn = item.querySelector(".btn-remove-dem-item");
         if (removeBtn) {
           removeBtn.addEventListener("click", () => {
@@ -1792,9 +1871,6 @@
             updateDemIndexes();
           });
         }
-    
-        // เรียกครั้งแรกเพื่อจัด state เริ่มต้น
-        updateCoverageGroup();
       }
     
       // -------------------- Init item แรก --------------------
@@ -1809,11 +1885,13 @@
         const first = demContainer.querySelector(".dem-item");
         const clone = first.cloneNode(true);
     
-        // ล้างค่าทั้งหมดใน clone
         clone.querySelectorAll("input, textarea, select").forEach((el) => {
           if (el.tagName === "SELECT") {
             el.selectedIndex = 0;
-          } else if (el.type === "checkbox" || el.type === "radio") {
+          } else if (
+            el.type === "checkbox" ||
+            el.type === "radio"
+          ) {
             el.checked = false;
             el.disabled = false;
           } else {
@@ -1824,7 +1902,6 @@
           }
         });
     
-        // ซ่อน/ปิด other fields (dropdown-อื่นๆ)
         clone
           .querySelectorAll(
             ".source-other-wrapper, .resolution-other-wrapper, .vertical-datum-other-wrapper, .coord-other-wrapper, .license-other-wrapper"
@@ -1840,7 +1917,6 @@
             inp.value = "";
           });
     
-        // ซ่อน block coverage
         clone
           .querySelectorAll(".basin-block, .province-block")
           .forEach((b) => b.classList.add("hidden"));
@@ -1855,7 +1931,6 @@
           cloneLocalToggle.checked = false;
         }
     
-        // ล้าง Tag Stack
         clone
           .querySelectorAll(".basin-tags, .province-tags")
           .forEach((c) => (c.innerHTML = ""));
@@ -1863,18 +1938,21 @@
           .querySelectorAll(".basin-other-input, .province-other-input")
           .forEach((inp) => (inp.value = ""));
     
-        // ล้าง search box + unhide ทุก option
         const basinSearch = clone.querySelector(".basin-search");
         const basinSelect = clone.querySelector(".basin-select");
         if (basinSearch) basinSearch.value = "";
         if (basinSelect) {
-          Array.from(basinSelect.options).forEach((opt) => (opt.hidden = false));
+          Array.from(basinSelect.options).forEach(
+            (opt) => (opt.hidden = false)
+          );
         }
         const provinceSearch = clone.querySelector(".province-search");
         const provinceSelect = clone.querySelector(".province-select");
         if (provinceSearch) provinceSearch.value = "";
         if (provinceSelect) {
-          Array.from(provinceSelect.options).forEach((opt) => (opt.hidden = false));
+          Array.from(provinceSelect.options).forEach(
+            (opt) => (opt.hidden = false)
+          );
         }
     
         demContainer.appendChild(clone);
@@ -1892,33 +1970,35 @@
           "ยืนยันล้างข้อมูล",
           "คุณต้องการล้างค่าทั้งหมดในแบบฟอร์มหรือไม่?",
           () => {
+            clearValidationErrors();
             form.reset();
     
-            // ลบ DEM item ทั้งหมด ยกเว้นตัวแรก
             const items = demContainer.querySelectorAll(".dem-item");
             items.forEach((item, idx) => {
-              if (idx > 0) {
-                item.remove();
-              }
+              if (idx > 0) item.remove();
             });
     
             const first = demContainer.querySelector(".dem-item");
             if (!first) return;
     
-            // ล้างสถานะเพิ่มเติมใน item แรก
             const basinBlock = first.querySelector(".basin-block");
             const provinceBlock = first.querySelector(".province-block");
             const basinTags = first.querySelector(".basin-tags");
             const provinceTags = first.querySelector(".province-tags");
             const basinHidden = first.querySelector(".basin-other-input");
-            const provinceHidden = first.querySelector(".province-other-input");
+            const provinceHidden =
+              first.querySelector(".province-other-input");
             const localInput = first.querySelector(".local-input");
             const localToggle = first.querySelector(".toggle-local");
             const localBlock = first.querySelector(".local-block");
             const basinSearch = first.querySelector(".basin-search");
             const basinSelect = first.querySelector(".basin-select");
-            const provinceSearch = first.querySelector(".province-search");
-            const provinceSelect = first.querySelector(".province-select");
+            const provinceSearch = first.querySelector(
+              ".province-search"
+            );
+            const provinceSelect = first.querySelector(
+              ".province-select"
+            );
     
             if (basinBlock) basinBlock.classList.add("hidden");
             if (provinceBlock) provinceBlock.classList.add("hidden");
@@ -1936,16 +2016,18 @@
     
             if (basinSearch) basinSearch.value = "";
             if (basinSelect) {
-              Array.from(basinSelect.options).forEach((opt) => (opt.hidden = false));
+              Array.from(basinSelect.options).forEach(
+                (opt) => (opt.hidden = false)
+              );
             }
             if (provinceSearch) provinceSearch.value = "";
             if (provinceSelect) {
-              Array.from(provinceSelect.options).forEach((opt) => (opt.hidden = false));
+              Array.from(provinceSelect.options).forEach(
+                (opt) => (opt.hidden = false)
+              );
             }
     
-            // รีเซ็ตช่อง other + flag
             attachOtherFieldHandlers(first);
-    
             populateYearSelects();
             updateDemIndexes();
             applyReferenceDataToAllItems();
@@ -1962,7 +2044,12 @@
           vals = vals.filter((v) => {
             if (!v) return false;
             const t = v.toString().toLowerCase().replace(/\s+/g, "");
-            return t !== "other" && t !== "อื่นๆ" && t !== "อื่นๆระบุ" && t !== "อื่นๆ(ระบุ)";
+            return (
+              t !== "other" &&
+              t !== "อื่นๆ" &&
+              t !== "อื่นๆระบุ" &&
+              t !== "อื่นๆ(ระบุ)"
+            );
           });
         }
         return vals;
@@ -1970,14 +2057,22 @@
     
       function collectFormData() {
         const agency = {
-          agencyName: document.getElementById("agencyName").value.trim(),
+          agencyName: document
+            .getElementById("agencyName")
+            .value.trim(),
           subUnit: document.getElementById("subUnit").value.trim(),
-          contactName: document.getElementById("contactName").value.trim(),
+          contactName: document
+            .getElementById("contactName")
+            .value.trim(),
           contactPosition: document
             .getElementById("contactPosition")
             .value.trim(),
-          contactPhone: document.getElementById("contactPhone").value.trim(),
-          contactEmail: document.getElementById("contactEmail").value.trim(),
+          contactPhone: document
+            .getElementById("contactPhone")
+            .value.trim(),
+          contactEmail: document
+            .getElementById("contactEmail")
+            .value.trim(),
         };
     
         const items = [];
@@ -1985,14 +2080,14 @@
         demItems.forEach((item) => {
           const itemData = {};
     
-          // A. ข้อมูลทั่วไป
-          const sourceSelect = item.querySelector('select[name="sourceType[]"]');
+          const sourceSelect = item.querySelector(".source-select");
           const sourceOtherInput = item.querySelector(
-            'input[name="sourceOther[]"]'
+            ".source-other-input"
           );
     
           itemData.demName =
-            item.querySelector('input[name="demName[]"]')?.value.trim() || "";
+            item.querySelector('input[name="demName[]"]')?.value.trim() ||
+            "";
     
           if (sourceSelect) {
             if (sourceSelect.value === "other") {
@@ -2006,26 +2101,26 @@
           }
     
           itemData.year =
-            item.querySelector('select[name="year[]"]')?.value || "";
+            item.querySelector(".year-select")?.value || "";
     
-          // พื้นที่ครอบคลุม
           itemData.coverageCountry = getCheckedValues(
             item,
             'input[name="coverageCountry[]"]',
             false
           );
           itemData.coverageBasinTags =
-            item.querySelector(".basin-other-input")?.value.trim() || "";
-          itemData.coverageProvinceTags =
-            item.querySelector(".province-other-input")?.value.trim() || "";
-          itemData.coverageLocal =
-            item.querySelector('input[name="coverageLocal[]"]')?.value.trim() ||
+            item.querySelector(".basin-other-input")?.value.trim() ||
             "";
+          itemData.coverageProvinceTags =
+            item.querySelector(".province-other-input")?.value.trim() ||
+            "";
+          itemData.coverageLocal =
+            item.querySelector('input[name="coverageLocal[]"]')
+              ?.value.trim() || "";
     
-          // B. คุณภาพเชิงพื้นที่
-          const resSelect = item.querySelector('select[name="resolution[]"]');
+          const resSelect = item.querySelector(".resolution-select");
           const resOtherInput = item.querySelector(
-            'input[name="resolutionOther[]"]'
+            ".resolution-other-input"
           );
           if (resSelect) {
             if (
@@ -2042,16 +2137,17 @@
           }
     
           itemData.verticalAccuracy =
-            item.querySelector('input[name="verticalAccuracy[]"]')?.value || "";
+            item.querySelector('input[name="verticalAccuracy[]"]')
+              ?.value || "";
           itemData.horizontalAccuracy =
-            item.querySelector('input[name="horizontalAccuracy[]"]')?.value ||
-            "";
+            item.querySelector('input[name="horizontalAccuracy[]"]')
+              ?.value || "";
     
           const vDatumSelect = item.querySelector(
-            'select[name="verticalDatum[]"]'
+            ".vertical-datum-select"
           );
           const vDatumInput = item.querySelector(
-            'input[name="verticalDatumOther[]"]'
+            ".vertical-datum-other-input"
           );
           if (vDatumSelect) {
             if (vDatumSelect.value === "other") {
@@ -2064,10 +2160,8 @@
             itemData.verticalDatum = "";
           }
     
-          const coordSelect = item.querySelector('select[name="coordSys[]"]');
-          const coordInput = item.querySelector(
-            'input[name="coordSysOther[]"]'
-          );
+          const coordSelect = item.querySelector(".coord-select");
+          const coordInput = item.querySelector(".coord-other-input");
           if (coordSelect) {
             if (coordSelect.value === "other") {
               itemData.coordSys =
@@ -2079,35 +2173,37 @@
             itemData.coordSys = "";
           }
     
-          // วิธีการจัดทำ DEM
           itemData.demMethods = getCheckedValues(
             item,
             'input[name^="demMethod"]',
             true
           );
           const demMethodOtherText =
-            item.querySelector('input[name="demMethodOther[]"]')?.value.trim() ||
-            "";
-          if (demMethodOtherText) itemData.demMethods.push(demMethodOtherText);
+            item.querySelector('input[name="demMethodOther[]"]')
+              ?.value.trim() || "";
+          if (demMethodOtherText)
+            itemData.demMethods.push(demMethodOtherText);
     
-          // รูปแบบไฟล์
           itemData.fileFormats = getCheckedValues(
             item,
             'input[name^="format"]',
             true
           );
           const formatOtherText =
-            item.querySelector('input[name="formatOther[]"]')?.value.trim() || "";
-          if (formatOtherText) itemData.fileFormats.push(formatOtherText);
+            item.querySelector('input[name="formatOther[]"]')
+              ?.value.trim() || "";
+          if (formatOtherText)
+            itemData.fileFormats.push(formatOtherText);
     
           itemData.fileSize =
-            item.querySelector('input[name="fileSize[]"]')?.value || "";
+            item.querySelector('input[name="fileSize[]"]')?.value ||
+            "";
           itemData.fileSizeUnit =
-            item.querySelector('select[name="fileSizeUnit[]"]')?.value || "";
+            item.querySelector('select[name="fileSizeUnit[]"]')
+              ?.value || "";
     
-          // ลิขสิทธิ์
-          const licSelect = item.querySelector('select[name="license[]"]');
-          const licInput = item.querySelector('input[name="licenseOther[]"]');
+          const licSelect = item.querySelector(".license-select");
+          const licInput = item.querySelector(".license-other-input");
           if (licSelect) {
             if (licSelect.value === "other") {
               itemData.license =
@@ -2119,32 +2215,36 @@
             itemData.license = "";
           }
     
-          // ช่องทางการเข้าถึง
           itemData.accessChannels = getCheckedValues(
             item,
             'input[name^="access"]',
             true
           );
           itemData.accessOther =
-            item.querySelector('input[name="accessOther[]"]')?.value.trim() || "";
+            item.querySelector('input[name="accessOther[]"]')
+              ?.value.trim() || "";
     
-          // QC/QA
-          itemData.qcQa = getCheckedValues(item, 'input[name^="qc"]', true);
+          itemData.qcQa = getCheckedValues(
+            item,
+            'input[name^="qc"]',
+            true
+          );
           itemData.qcQaOther =
-            item.querySelector('input[name="qcOther[]"]')?.value.trim() || "";
+            item.querySelector('input[name="qcOther[]"]')
+              ?.value.trim() || "";
     
-          // การใช้งาน
           itemData.mainUses = getCheckedValues(
             item,
             'input[name^="use"]',
             true
           );
           itemData.mainUsesOther =
-            item.querySelector('input[name="useOther[]"]')?.value.trim() || "";
+            item.querySelector('input[name="useOther[]"]')
+              ?.value.trim() || "";
     
-          // หมายเหตุ
           itemData.remark =
-            item.querySelector('textarea[name="remark[]"]')?.value.trim() || "";
+            item.querySelector('textarea[name="remark[]"]')
+              ?.value.trim() || "";
     
           items.push(itemData);
         });
@@ -2170,11 +2270,162 @@
         return data || { success: resp.ok };
       }
     
+      // -------------------- Validate Form --------------------
+      function validateForm() {
+        clearValidationErrors();
+        let valid = true;
+    
+        // หน่วยงาน
+        requiredAgencyIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el && !el.value.trim()) {
+            showError(el, "กรุณากรอกข้อมูลให้ครบ");
+            valid = false;
+          }
+        });
+    
+        // email format (หยาบ ๆ)
+        const emailEl = document.getElementById("contactEmail");
+        if (emailEl && emailEl.value.trim()) {
+          const re = /\S+@\S+\.\S+/;
+          if (!re.test(emailEl.value.trim())) {
+            showError(emailEl, "รูปแบบอีเมลไม่ถูกต้อง");
+            valid = false;
+          }
+        }
+    
+        // โทรศัพท์ check อีกครั้ง
+        const phoneEl = document.getElementById("contactPhone");
+        if (phoneEl && phoneEl.value.trim()) {
+          const digits = phoneEl.value.replace(/\D/g, "");
+          if (digits.length !== 9 && digits.length !== 10) {
+            showError(
+              phoneEl,
+              "กรุณากรอกหมายเลขโทรศัพท์ 9 หรือ 10 หลัก (ไม่ต้องใส่ขีด)"
+            );
+            valid = false;
+          }
+        }
+    
+        // DEM items
+        const demItems = demContainer.querySelectorAll(".dem-item");
+        demItems.forEach((item) => {
+          const demName = item.querySelector('input[name="demName[]"]');
+          if (demName && !demName.value.trim()) {
+            showError(demName, "กรุณากรอกชื่อชุดข้อมูล DEM");
+            valid = false;
+          }
+    
+          const sourceSelect = item.querySelector(".source-select");
+          if (sourceSelect) {
+            if (!sourceSelect.value) {
+              showError(sourceSelect, "กรุณาเลือกแหล่งที่มาของข้อมูล");
+              valid = false;
+            } else if (sourceSelect.value === "other") {
+              const sourceOther = item.querySelector(
+                ".source-other-input"
+              );
+              if (!sourceOther.value.trim()) {
+                showError(
+                  sourceOther,
+                  "กรุณาระบุแหล่งที่มาของข้อมูล"
+                );
+                valid = false;
+              }
+            }
+          }
+    
+          const yearSelect = item.querySelector(".year-select");
+          if (yearSelect && !yearSelect.value.trim()) {
+            showError(yearSelect, "กรุณาเลือกปีจัดทำ");
+            valid = false;
+          }
+    
+          const resSelect = item.querySelector(".resolution-select");
+          if (resSelect) {
+            if (!resSelect.value) {
+              showError(
+                resSelect,
+                "กรุณาเลือกความละเอียดเชิงพื้นที่"
+              );
+              valid = false;
+            } else if (
+              resSelect.value === "other" ||
+              resSelect.value === "lidar_sub1m"
+            ) {
+              const resOther = item.querySelector(
+                ".resolution-other-input"
+              );
+              if (!resOther.value.trim()) {
+                showError(
+                  resOther,
+                  "กรุณาระบุความละเอียดเชิงพื้นที่"
+                );
+                valid = false;
+              }
+            }
+          }
+    
+          const vSelect = item.querySelector(".vertical-datum-select");
+          if (vSelect) {
+            if (!vSelect.value) {
+              showError(vSelect, "กรุณาเลือก Vertical Datum");
+              valid = false;
+            } else if (vSelect.value === "other") {
+              const vOther = item.querySelector(
+                ".vertical-datum-other-input"
+              );
+              if (!vOther.value.trim()) {
+                showError(
+                  vOther,
+                  "กรุณาระบุ Vertical Datum"
+                );
+                valid = false;
+              }
+            }
+          }
+    
+          const coordSelect = item.querySelector(".coord-select");
+          if (coordSelect) {
+            if (!coordSelect.value) {
+              showError(coordSelect, "กรุณาเลือกระบบพิกัด");
+              valid = false;
+            } else if (coordSelect.value === "other") {
+              const cOther = item.querySelector(".coord-other-input");
+              if (!cOther.value.trim()) {
+                showError(cOther, "กรุณาระบุระบบพิกัด");
+                valid = false;
+              }
+            }
+          }
+    
+          const licSelect = item.querySelector(".license-select");
+          if (licSelect) {
+            if (!licSelect.value) {
+              showError(
+                licSelect,
+                "กรุณาเลือกลิขสิทธิ์ / เงื่อนไขการใช้ข้อมูล"
+              );
+              valid = false;
+            } else if (licSelect.value === "other") {
+              const lOther = item.querySelector(".license-other-input");
+              if (!lOther.value.trim()) {
+                showError(lOther, "กรุณาระบุลิขสิทธิ์");
+                valid = false;
+              }
+            }
+          }
+        });
+    
+        return valid;
+      }
+    
+      // -------------------- Handle Submit --------------------
       form.addEventListener("submit", (e) => {
         e.preventDefault();
     
-        // ใช้ HTML5 validation ก่อน (required / phone / อื่น ๆ)
-        if (!form.reportValidity()) {
+        if (!validateForm()) {
+          // ถ้ามี error จะไม่ส่งต่อ
           return;
         }
     
@@ -2185,37 +2436,37 @@
             const payload = collectFormData();
             try {
               const res = await submitToAppsScript(payload);
-    
-              // ถ้าสำเร็จ แสดง popup ตรงกลาง
               if (res && res.success) {
                 openSuccessModal();
               } else {
                 alert("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
               }
     
-              // reset form กลับไปเหลือ DEM 1 ชุด
               form.reset();
+              clearValidationErrors();
+    
               const items = demContainer.querySelectorAll(".dem-item");
               items.forEach((item, idx) => {
                 if (idx > 0) item.remove();
               });
     
               const first = demContainer.querySelector(".dem-item");
-              if (first) {
-                attachOtherFieldHandlers(first);
-              }
+              if (first) attachOtherFieldHandlers(first);
     
               populateYearSelects();
               updateDemIndexes();
               applyReferenceDataToAllItems();
             } catch (err) {
               console.error("submitDemSurvey error", err);
-              alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง");
+              alert(
+                "เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง"
+              );
             }
           }
         );
       });
     </script>
+
     
   </body>
 </html>
