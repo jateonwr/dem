@@ -286,10 +286,6 @@
                   <h3
                     class="text-sm font-bold text-slate-700 flex items-center gap-2"
                   >
-                    <span
-                      class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded mr-1 dem-index"
-                      >#1</span
-                    >
                     ชุดข้อมูลที่ 1
                     <button
                       type="button"
@@ -2204,9 +2200,8 @@
       form.addEventListener("submit", (e) => {
         e.preventDefault();
 
-        // 1. เรียกใช้ Custom Validation แทน form.reportValidity()
+        // 1. เรียกใช้ Custom Validation
         if (!validateFormCustom()) {
-          // ถ้าไม่ผ่าน ให้หยุดทำงานตรงนี้ (ข้อความสีแดงจะขึ้นเองจากฟังก์ชันข้างบน)
           return; 
         }
 
@@ -2217,7 +2212,6 @@
           async () => {
             const payload = collectFormData();
             try {
-              // เพิ่ม Loading state หรือ disable ปุ่มตรงนี้ก็ได้ถ้าต้องการ
               const res = await submitToAppsScript(payload);
 
               if (res && res.success) {
@@ -2226,7 +2220,7 @@
                 alert("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
               }
 
-              // 1. Reset Form มาตรฐาน (checkbox จะถูกติ๊กออกตรงนี้)
+              // 1. Reset Form มาตรฐาน
               form.reset();
               
               // ลบ Error แดงค้างเก่า
@@ -2236,30 +2230,30 @@
                   e.classList.add("border-slate-300");
               });
 
-              // ลบ DEM item ส่วนเกิน
+              // ลบ DEM item ส่วนเกิน (ประกาศ items ครั้งเดียวตรงนี้)
               const items = demContainer.querySelectorAll(".dem-item");
               items.forEach((item, idx) => {
                 if (idx > 0) item.remove();
               });
 
               // ===============================================
-              // ส่วนที่เพิ่ม: ล้างค่า Stack และซ่อนกล่องที่ค้างอยู่
+              // ล้างค่า Stack และซ่อนกล่องที่ค้างอยู่ใน item แรก
               // ===============================================
               const first = demContainer.querySelector(".dem-item");
               if (first) {
-                // 1. ล้างป้าย Stack (ลุ่มน้ำ / จังหวัด) ที่ค้างอยู่
+                // 1. ล้างป้าย Stack
                 const basinTags = first.querySelector(".basin-tags");
                 const provinceTags = first.querySelector(".province-tags");
                 if (basinTags) basinTags.innerHTML = "";
                 if (provinceTags) provinceTags.innerHTML = "";
 
-                // 2. ล้างค่า Hidden Input ของ Stack ให้เกลี้ยง
+                // 2. ล้างค่า Hidden Input
                 const basinHidden = first.querySelector(".basin-other-input");
                 const provinceHidden = first.querySelector(".province-other-input");
                 if (basinHidden) basinHidden.value = "";
                 if (provinceHidden) provinceHidden.value = "";
 
-                // 3. ซ่อนกล่อง (Block) ที่เคยเปิดค้างไว้
+                // 3. ซ่อนกล่อง
                 const basinBlock = first.querySelector(".basin-block");
                 const provinceBlock = first.querySelector(".province-block");
                 const localBlock = first.querySelector(".local-block");
@@ -2267,12 +2261,11 @@
                 if (provinceBlock) provinceBlock.classList.add("hidden");
                 if (localBlock) localBlock.classList.add("hidden");
 
-                // 4. ล้างค่า "พื้นที่เฉพาะจุด" และ Disable มันกลับคืน
+                // 4. ล้างค่า "พื้นที่เฉพาะจุด"
                 const localInput = first.querySelector(".local-input");
                 if (localInput) {
                     localInput.value = "";
                     localInput.disabled = true;
-                    // ลบ required ออกด้วย (เพราะถูกซ่อนแล้ว)
                     localInput.required = false; 
                     clearError(localInput);
                 }
@@ -2281,23 +2274,11 @@
                 attachOtherFieldHandlers(first);
               }
 
+              // อัปเดตสถานะต่างๆ ให้พร้อมใช้งานใหม่
               populateYearSelects();
               updateDemIndexes();
               applyReferenceDataToAllItems();
 
-              const items = demContainer.querySelectorAll(".dem-item");
-              items.forEach((item, idx) => {
-                if (idx > 0) item.remove();
-              });
-
-              const first = demContainer.querySelector(".dem-item");
-              if (first) {
-                attachOtherFieldHandlers(first);
-              }
-
-              populateYearSelects();
-              updateDemIndexes();
-              applyReferenceDataToAllItems();
             } catch (err) {
               console.error("submitDemSurvey error", err);
               alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง");
