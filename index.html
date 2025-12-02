@@ -1681,30 +1681,107 @@
         const localBlock = item.querySelector(".local-block");
         const localInput = item.querySelector(".local-input");
 
+        // ฟังก์ชันจัดการ Logic พื้นที่ครอบคลุม (แก้ใหม่ตามโจทย์ข้อ 4)
         function updateCoverageGroup() {
-             const cbs = [coverageCountryCb, basinToggle, provinceToggle, localToggle];
-             const selected = cbs.find((cb) => cb && cb.checked);
-             cbs.forEach((cb) => {
-               if (!cb) return;
-               if (selected && cb !== selected) {
-                 cb.checked = false;
-                 cb.disabled = true;
-               } else {
-                 cb.disabled = false;
-               }
-             });
-             if (basinBlock && basinToggle) basinBlock.classList.toggle("hidden", !basinToggle.checked);
-             if (provinceBlock && provinceToggle) provinceBlock.classList.toggle("hidden", !provinceToggle.checked);
-             if (localBlock && localInput && localToggle) {
-               const showLocal = localToggle.checked;
-               localBlock.classList.toggle("hidden", !showLocal);
-               localInput.disabled = !showLocal;
-               if (!showLocal) {
-                   localInput.value = "";
-                   clearError(localInput); // เพิ่ม clearError ให้ localInput ด้วยก็ได้ครับ
-               } else {
-                   // localInput.required = true; // ถ้าต้องการบังคับข้อนี้ด้วย ให้เปิด comment นี้
-               }
+             const isCountry = coverageCountryCb ? coverageCountryCb.checked : false;
+
+             // -----------------------------------------------------------
+             // กรณีที่ 1: ถ้าเลือก "ประเทศไทยทั้งหมด"
+             // -----------------------------------------------------------
+             if (isCountry) {
+                 // 1. Disable และ Uncheck อันอื่นให้หมด
+                 if (basinToggle) {
+                     basinToggle.disabled = true;
+                     basinToggle.checked = false;
+                 }
+                 if (provinceToggle) {
+                     provinceToggle.disabled = true;
+                     provinceToggle.checked = false;
+                 }
+                 if (localToggle) {
+                     localToggle.disabled = true;
+                     localToggle.checked = false;
+                 }
+
+                 // 2. ซ่อน Block ย่อยทั้งหมด
+                 if (basinBlock) basinBlock.classList.add("hidden");
+                 if (provinceBlock) provinceBlock.classList.add("hidden");
+                 if (localBlock) localBlock.classList.add("hidden");
+
+                 // 3. ล้างค่าข้อมูลภายใน (เพื่อไม่ให้ส่งไปบันทึก)
+                 // ล้างลุ่มน้ำ
+                 if (basinTags) basinTags.innerHTML = "";
+                 if (basinHidden) basinHidden.value = "";
+                 if (basinSearch) basinSearch.value = "";
+                 
+                 // ล้างจังหวัด
+                 if (provinceTags) provinceTags.innerHTML = "";
+                 if (provinceHidden) provinceHidden.value = "";
+                 if (provinceSearch) provinceSearch.value = "";
+
+                 // ล้างพื้นที่เฉพาะจุด
+                 if (localInput) {
+                     localInput.value = "";
+                     localInput.disabled = true;
+                     localInput.required = false; 
+                     clearError(localInput);
+                 }
+
+             } else {
+                 // -----------------------------------------------------------
+                 // กรณีที่ 2: ไม่ได้เลือกประเทศไทย (เลือกผสมกันได้)
+                 // -----------------------------------------------------------
+                 
+                 // 1. Enable Checkbox ที่เหลือให้กดได้
+                 if (basinToggle) basinToggle.disabled = false;
+                 if (provinceToggle) provinceToggle.disabled = false;
+                 if (localToggle) localToggle.disabled = false;
+
+                 // 2. แสดง/ซ่อน Block ตามที่ติ๊ก (เป็นอิสระต่อกัน)
+                 
+                 // --- ลุ่มน้ำ ---
+                 if (basinBlock && basinToggle) {
+                     const showBasin = basinToggle.checked;
+                     basinBlock.classList.toggle("hidden", !showBasin);
+                     // ถ้าปิด -> ล้างค่าทิ้งด้วย (เผื่อติ๊กแล้วติ๊กออก)
+                     if (!showBasin) {
+                         if (basinTags) basinTags.innerHTML = "";
+                         if (basinHidden) basinHidden.value = "";
+                         if (basinSearch) basinSearch.value = "";
+                     }
+                 }
+
+                 // --- จังหวัด ---
+                 if (provinceBlock && provinceToggle) {
+                     const showProvince = provinceToggle.checked;
+                     provinceBlock.classList.toggle("hidden", !showProvince);
+                     // ถ้าปิด -> ล้างค่าทิ้ง
+                     if (!showProvince) {
+                         if (provinceTags) provinceTags.innerHTML = "";
+                         if (provinceHidden) provinceHidden.value = "";
+                         if (provinceSearch) provinceSearch.value = "";
+                     }
+                 }
+
+                 // --- พื้นที่เฉพาะจุด ---
+                 if (localBlock && localInput && localToggle) {
+                   const showLocal = localToggle.checked;
+                   localBlock.classList.toggle("hidden", !showLocal);
+                   localInput.disabled = !showLocal;
+                   
+                   // ถ้าเปิด -> บังคับกรอก, ถ้าปิด -> ล้างค่า
+                   localInput.required = showLocal;
+
+                   if (!showLocal) {
+                       localInput.value = "";
+                       clearError(localInput);
+                   } else {
+                       // ถ้าเพิ่งเปิด ให้ Focus
+                       if (document.activeElement === localToggle) {
+                           localInput.focus();
+                       }
+                   }
+                 }
              }
         }
 
