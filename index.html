@@ -27,82 +27,76 @@
         min-height: 3.5rem;
       }
 
-/* toggle-pill (ปรับขนาดให้เล็กลง) */
+      /* toggle-pill */
       .toggle-pill {
         position: relative;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 54px; /* ลดความกว้าง */
-        height: 22px;    /* ลดความสูง */
+        min-width: 54px;
+        height: 22px;
         border-radius: 9999px;
         cursor: pointer;
         border: none;
         outline: none;
         transition: background-color 0.25s ease;
-        padding: 0;      /* เอา padding เดิมออกเพื่อจัดระยะด้วย margin */
+        padding: 0;
         background-color: #94a3b8;
       }
 
-      /* toggle-knob (วงกลมเล็กลง) */
       .toggle-pill .toggle-knob {
-        width: 16px;     /* ลดขนาดวงกลม */
-        height: 16px;    /* ลดขนาดวงกลม */
+        width: 16px;
+        height: 16px;
         border-radius: 50%;
         background: #ffffff;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         position: absolute;
-        top: 3px;        /* จัดกึ่งกลางแนวตั้ง (22-16)/2 = 3 */
+        top: 3px;
         transition: left 0.25s ease, right 0.25s ease;
       }
 
-      /* toggle-label (ข้อความ) */
       .toggle-label {
         display: inline-block;
         color: #ffffff;
-        font-size: 10px; /* ลดขนาดฟอนต์เล็กน้อย */
+        font-size: 10px;
         font-weight: 600;
         pointer-events: none;
-        transition: margin 0.25s ease; /* เพิ่ม transition ให้ข้อความขยับนุ่มนวล */
+        transition: margin 0.25s ease;
       }
 
-      /* --- สถานะ: SHOWN (สีเขียว / เปิด) --- */
-      /* ปุ่มอยู่ขวา -> ข้อความต้องอยู่ซ้าย */
       .toggle-pill[data-state="shown"] {
         background-color: #22c55e;
       }
       .toggle-pill[data-state="shown"] .toggle-knob {
         left: auto;
-        right: 3px; /* ชิดขวา */
+        right: 3px;
       }
       .toggle-pill[data-state="shown"] .toggle-label {
-        margin-right: 14px; /* ดันข้อความไปทางซ้าย หนีจากปุ่ม */
+        margin-right: 14px;
         margin-left: 0;
       }
 
-      /* --- สถานะ: HIDDEN (สีเทา / ปิด) --- */
-      /* ปุ่มอยู่ซ้าย -> ข้อความต้องอยู่ขวา */
       .toggle-pill[data-state="hidden"] {
         background-color: #94a3b8;
       }
       .toggle-pill[data-state="hidden"] .toggle-knob {
-        left: 3px;  /* ชิดซ้าย */
+        left: 3px;
         right: auto;
       }
       .toggle-pill[data-state="hidden"] .toggle-label {
-        margin-left: 14px; /* ดันข้อความไปทางขวา หนีจากปุ่ม */
+        margin-left: 14px;
         margin-right: 0;
       }
 
-      /* Tag แบบ C (pill) สำหรับลุ่มน้ำ / จังหวัด */
+      /* Tag Pill */
       .tag-pill {
         display: inline-flex;
         align-items: center;
         padding: 0.1rem 0.5rem;
         border-radius: 9999px;
         font-size: 0.75rem;
-        background-color: #dbeafe; /* blue-100 */
-        color: #1d4ed8; /* blue-700 */
+        background-color: #dbeafe;
+        color: #1d4ed8;
         cursor: default;
         margin-right: 0.1rem;
         position: relative;
@@ -141,7 +135,6 @@
         </header>
 
         <form id="demSurveyForm" class="space-y-7" novalidate>
-          <!-- ส่วนที่ 1 -->
           <section>
             <h2
               class="text-lg font-semibold text-slate-800 mb-3 border-l-4 border-blue-600 pl-3"
@@ -255,7 +248,6 @@
 
           <hr class="border-slate-200" />
 
-          <!-- ส่วนที่ 2 -->
           <section>
             <div
               class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4"
@@ -314,7 +306,6 @@
                 </div>
 
                 <div class="space-y-4">
-                  <!-- A. ข้อมูลทั่วไป -->
                   <div
                     class="section-card rounded-lg bg-white border border-slate-200 px-3 py-3 space-y-3 shadow-sm"
                   >
@@ -335,63 +326,61 @@
                     </div>
                     <div class="section-body space-y-3">
                       <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
-  
-                      <div class="sm:flex-1">
-                        <label
-                          class="block text-sm font-medium text-slate-700 mb-1"
-                          >1. ชื่อชุดข้อมูล DEM</label
-                        >
-                        <input
-                          type="text"
-                          name="demName[]"
-                          class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="เช่น LiDAR พ.ศ. 2566 พื้นที่ลุ่มน้ำบางปะกง หรือชื่อโครงการจัดทำ DEM"
-                        />
-                      </div>
-                    
-                      <div class="sm:basis-[30%]">
-                        <label
-                          class="block text-sm font-medium text-slate-700 mb-1"
-                          >2. แหล่งที่มา / ผู้ผลิตข้อมูล</label
-                        >
-                        <select
-                          name="sourceType[]"
-                          class="source-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          <option value="">-- เลือกแหล่งที่มา --</option>
-                          <option value="self">หน่วยงานผลิตเอง</option>
-                          <option value="rtsd">กรมแผนที่ทหาร</option>
-                          <option value="gistda">GISTDA</option>
-                          <option value="ldd">กรมพัฒนาที่ดิน</option>
-                          <option value="other">อื่น ๆ (ระบุ)</option>
-                        </select>
-                        
-                        <div class="source-other-wrapper mt-2 hidden">
+                        <div class="sm:flex-1">
+                          <label
+                            class="block text-sm font-medium text-slate-700 mb-1"
+                            >1. ชื่อชุดข้อมูล DEM</label
+                          >
                           <input
                             type="text"
-                            name="sourceOther[]"
-                            class="source-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="ระบุหน่วยงาน / บริษัท"
-                            disabled
+                            name="demName[]"
+                            class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="เช่น LiDAR พ.ศ. 2566 พื้นที่ลุ่มน้ำบางปะกง หรือชื่อโครงการจัดทำ DEM"
                           />
                         </div>
+                        
+                        <div class="sm:basis-[30%]">
+                          <label
+                            class="block text-sm font-medium text-slate-700 mb-1"
+                            >2. แหล่งที่มา / ผู้ผลิตข้อมูล</label
+                          >
+                          <select
+                            name="sourceType[]"
+                            class="source-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          >
+                            <option value="">-- เลือกแหล่งที่มา --</option>
+                            <option value="self">หน่วยงานผลิตเอง</option>
+                            <option value="rtsd">กรมแผนที่ทหาร</option>
+                            <option value="gistda">GISTDA</option>
+                            <option value="ldd">กรมพัฒนาที่ดิน</option>
+                            <option value="other">อื่น ๆ (ระบุ)</option>
+                          </select>
+                          
+                          <div class="source-other-wrapper mt-2 hidden">
+                            <input
+                              type="text"
+                              name="sourceOther[]"
+                              class="source-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="ระบุหน่วยงาน / บริษัท"
+                              disabled
+                            />
+                          </div>
+                        </div>
+                        
+                        <div class="sm:basis-[10%] sm:max-w-[96px]">
+                          <label
+                            class="block text-sm font-medium text-slate-700 mb-1"
+                            >3. ปีจัดทำ</label
+                          >
+                          <select
+                            name="year[]"
+                            class="year-select block w-full rounded-md border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          >
+                            <option value="">พ.ศ.</option>
+                          </select>
+                        </div>
                       </div>
-                    
-                      <div class="sm:basis-[10%] sm:max-w-[96px]">
-                        <label
-                          class="block text-sm font-medium text-slate-700 mb-1"
-                          >3. ปีที่จัดทำ</label
-                        >
-                        <select
-                          name="year[]"
-                          class="year-select block w-full rounded-md border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          <option value="">พ.ศ.</option>
-                        </select>
-                      </div>
-                    </div>
 
-                      <!-- 4. พื้นที่ครอบคลุม -->
                       <div>
                         <p
                           class="block text-sm font-medium text-slate-700 mb-1"
@@ -400,7 +389,6 @@
                         </p>
 
                         <div class="space-y-1 text-sm">
-                          <!-- ประเทศไทยทั้งหมด -->
                           <label class="inline-flex items-center gap-2">
                             <input
                               type="checkbox"
@@ -411,7 +399,6 @@
                             <span>ประเทศไทยทั้งหมด</span>
                           </label>
 
-                          <!-- ลุ่มน้ำ -->
                           <div class="space-y-1">
                             <div class="inline-flex flex-wrap items-center gap-2">
                               <label class="inline-flex items-center gap-2 cursor-pointer">
@@ -424,7 +411,7 @@
                               
                               <div class="basin-tags flex flex-wrap items-center gap-1"></div>
                             </div>
-                          
+                            
                             <div class="basin-block mt-1 hidden">
                               <input
                                 type="text"
@@ -448,7 +435,6 @@
                             </div>
                           </div>
 
-                          <!-- จังหวัด -->
                           <div class="space-y-1">
                             <div class="inline-flex flex-wrap items-center gap-2">
                               <label class="inline-flex items-center gap-2 cursor-pointer">
@@ -458,10 +444,10 @@
                                 />
                                 <span>จังหวัด (สามารถระบุได้หลายค่า)</span>
                               </label>
-                          
+                              
                               <div class="province-tags flex flex-wrap items-center gap-1"></div>
                             </div>
-                          
+                            
                             <div class="province-block mt-1 hidden">
                               <input
                                 type="text"
@@ -485,7 +471,6 @@
                             </div>
                           </div>
 
-                          <!-- พื้นที่เฉพาะจุด -->
                           <div class="space-y-1">
                             <label class="inline-flex items-center gap-2">
                               <input
@@ -509,568 +494,182 @@
                     </div>
                   </div>
 
-                  <!-- B. รายละเอียดทางเทคนิค -->
-                  <div
-                    class="section-card rounded-lg bg-white border border-slate-200 px-3 py-3 space-y-3 shadow-sm"
-                  >
-                    <div
-                      class="section-header flex items-center justify-between select-none"
-                    >
-                      <p class="text-sm font-semibold text-slate-800">
-                        B. รายละเอียดทางเทคนิค
-                      </p>
-                      <button
-                        type="button"
-                        class="section-toggle toggle-pill"
-                        data-state="hidden"
-                      >
+                  <div class="section-card rounded-lg bg-white border border-slate-200 px-3 py-3 space-y-3 shadow-sm">
+                    <div class="section-header flex items-center justify-between select-none">
+                      <p class="text-sm font-semibold text-slate-800">B. รายละเอียดทางเทคนิค</p>
+                      <button type="button" class="section-toggle toggle-pill" data-state="hidden">
                         <span class="toggle-knob"></span>
                         <span class="toggle-label">แสดง</span>
                       </button>
                     </div>
                     <div class="section-body space-y-3 hidden">
-                      <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:flex-nowrap">
-                        <div class="lg:flex-1 min-w-[160px]">
-                          <label class="block text-sm font-medium text-slate-700 mb-1">5. Resolution</label>
-                          <select
-                            name="resolution[]"
-                            class="resolution-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          >
-                            <option value="">-- เลือก Resolution --</option>
-                            <option value="30m">30 m</option>
-                            <option value="10m">10 m</option>
-                            <option value="5m">5 m</option>
-                            <option value="1m">1 m</option>
-                            <option value="lidar_sub1m">ต่ำกว่า 1 m (LiDAR / ระบุ)</option>
-                            <option value="other">อื่น ๆ (ระบุ)</option>
-                          </select>
-                          <div class="resolution-other-wrapper mt-2 hidden">
-                            <input
-                              type="text"
-                              name="resolutionOther[]"
-                              class="resolution-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="เช่น 0.5 m หรือรายละเอียดเพิ่มเติม"
-                              disabled
-                            />
-                          </div>
+                        <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:flex-nowrap">
+                            <div class="lg:flex-1 min-w-[160px]">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">5. Resolution</label>
+                                <select name="resolution[]" class="resolution-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">-- เลือก Resolution --</option>
+                                    <option value="30m">30 m</option>
+                                    <option value="10m">10 m</option>
+                                    <option value="5m">5 m</option>
+                                    <option value="1m">1 m</option>
+                                    <option value="lidar_sub1m">ต่ำกว่า 1 m (LiDAR / ระบุ)</option>
+                                    <option value="other">อื่น ๆ (ระบุ)</option>
+                                </select>
+                                <div class="resolution-other-wrapper mt-2 hidden">
+                                    <input type="text" name="resolutionOther[]" class="resolution-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="เช่น 0.5 m หรือรายละเอียดเพิ่มเติม" disabled />
+                                </div>
+                            </div>
+                            <div class="lg:flex-1 min-w-[140px]">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">6. Vertical Accuracy (ม.)</label>
+                                <input type="text" name="verticalAccuracy[]" class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="เช่น 0.15" />
+                            </div>
+                            <div class="lg:flex-1 min-w-[140px]">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">7. Horizontal Accuracy (ม.)</label>
+                                <input type="text" name="horizontalAccuracy[]" class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="เช่น 0.30" />
+                            </div>
                         </div>
-                      
-                        <div class="lg:flex-1 min-w-[140px]">
-                          <label class="block text-sm font-medium text-slate-700 mb-1">6. Vertical Accuracy (ม.)</label>
-                          <input
-                            type="number"
-                            step="0.01"
-                            name="verticalAccuracy[]"
-                            class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="เช่น 0.15"
-                          />
+                        <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:flex-nowrap">
+                            <div class="lg:basis-1/2 min-w-[160px]">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">8. Vertical Datum</label>
+                                <select name="verticalDatum[]" class="vertical-datum-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">-- เลือก Vertical Datum --</option>
+                                    <option value="MSL">MSL</option>
+                                    <option value="EGM96">EGM96</option>
+                                    <option value="other">อื่น ๆ (ระบุ)</option>
+                                </select>
+                                <div class="vertical-datum-other-wrapper mt-2 hidden">
+                                    <input type="text" name="verticalDatumOther[]" class="vertical-datum-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุ Datum อื่น ๆ" disabled />
+                                </div>
+                            </div>
+                            <div class="lg:basis-1/2 min-w-[160px]">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">9. Coordinate System</label>
+                                <select name="coordSys[]" class="coord-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">-- เลือก Coordinate System --</option>
+                                    <option value="WGS84">WGS84</option>
+                                    <option value="UTM47N">UTM 47N</option>
+                                    <option value="UTM48N">UTM 48N</option>
+                                    <option value="other">อื่น ๆ (ระบุ)</option>
+                                </select>
+                                <div class="coord-other-wrapper mt-2 hidden">
+                                    <input type="text" name="coordSysOther[]" class="coord-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุระบบพิกัดอื่น ๆ" disabled />
+                                </div>
+                            </div>
                         </div>
-                      
-                        <div class="lg:flex-1 min-w-[140px]">
-                          <label class="block text-sm font-medium text-slate-700 mb-1">7. Horizontal Accuracy (ม.)</label>
-                          <input
-                            type="number"
-                            step="0.01"
-                            name="horizontalAccuracy[]"
-                            class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="เช่น 0.30"
-                          />
-                        </div>
-                      </div>
-
-                      <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:flex-nowrap">
-                        <div class="lg:basis-1/2 min-w-[160px]">
-                          <label class="block text-sm font-medium text-slate-700 mb-1">8. Vertical Datum</label>
-                          <select
-                            name="verticalDatum[]"
-                            class="vertical-datum-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          >
-                            <option value="">-- เลือก Vertical Datum --</option>
-                            <option value="MSL">MSL</option>
-                            <option value="EGM96">EGM96</option>
-                            <option value="other">อื่น ๆ (ระบุ)</option>
-                          </select>
-                          <div class="vertical-datum-other-wrapper mt-2 hidden">
-                            <input
-                              type="text"
-                              name="verticalDatumOther[]"
-                              class="vertical-datum-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="ระบุ Datum อื่น ๆ"
-                              disabled
-                            />
-                          </div>
-                        </div>
-                      
-                        <div class="lg:basis-1/2 min-w-[160px]">
-                          <label class="block text-sm font-medium text-slate-700 mb-1">9. Coordinate System</label>
-                          <select
-                            name="coordSys[]"
-                            class="coord-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          >
-                            <option value="">-- เลือก Coordinate System --</option>
-                            <option value="WGS84">WGS84</option>
-                            <option value="UTM47N">UTM 47N</option>
-                            <option value="UTM48N">UTM 48N</option>
-                            <option value="other">อื่น ๆ (ระบุ)</option>
-                          </select>
-                          <div class="coord-other-wrapper mt-2 hidden">
-                            <input
-                              type="text"
-                              name="coordSysOther[]"
-                              class="coord-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="ระบุระบบพิกัดอื่น ๆ"
-                              disabled
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- 10 fieldset -->
-                      <fieldset
-                        class="border border-slate-200 rounded-lg px-3 py-3"
-                      >
-                        <legend
-                          class="block text-sm font-medium text-slate-700"
-                        >
-                          10. วิธีการจัดทำ DEM (สามารถระบุได้หลายค่า)
-                        </legend>
-                        <div class="flex flex-wrap gap-3 text-sm">
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="demMethodLidar[]"
-                              value="LiDAR"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>LiDAR</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="demMethodUav[]"
-                              value="UAV Photogrammetry"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>UAV Photogrammetry</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="demMethodAlos[]"
-                              value="ALOS"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>ALOS</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="demMethodSrtm[]"
-                              value="SRTM"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>SRTM</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="demMethodTanDEM[]"
-                              value="TanDEM-X"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>TanDEM-X</span>
-                          </label>
-
-                          <label
-                            class="inline-flex items-center gap-2 flex-1 min-w-[220px]"
-                          >
-                            <input
-                              type="checkbox"
-                              name="demMethodOtherFlag[]"
-                              value="other"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>อื่น ๆ</span>
-                            <input
-                              type="text"
-                              name="demMethodOther[]"
-                              class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="ระบุวิธีการจัดทำ DEM"
-                            />
-                          </label>
-                        </div>
-                      </fieldset>
+                        <fieldset class="border border-slate-200 rounded-lg px-3 py-3">
+                            <legend class="block text-sm font-medium text-slate-700">10. วิธีการจัดทำ DEM (สามารถระบุได้หลายค่า)</legend>
+                            <div class="flex flex-wrap gap-3 text-sm">
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="demMethodLidar[]" value="LiDAR" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>LiDAR</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="demMethodUav[]" value="UAV Photogrammetry" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>UAV Photogrammetry</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="demMethodAlos[]" value="ALOS" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>ALOS</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="demMethodSrtm[]" value="SRTM" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>SRTM</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="demMethodTanDEM[]" value="TanDEM-X" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>TanDEM-X</span></label>
+                                <label class="inline-flex items-center gap-2 flex-1 min-w-[220px]">
+                                    <input type="checkbox" name="demMethodOtherFlag[]" value="other" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>อื่น ๆ</span>
+                                    <input type="text" name="demMethodOther[]" class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุวิธีการจัดทำ DEM">
+                                </label>
+                            </div>
+                        </fieldset>
                     </div>
                   </div>
 
-                  <!-- C. รูปแบบไฟล์และการเข้าถึง -->
-                  <div
-                    class="section-card rounded-lg bg-white border border-slate-200 px-3 py-3 space-y-3 shadow-sm"
-                  >
-                    <div
-                      class="section-header flex items-center justify-between select-none"
-                    >
-                      <p class="text-sm font-semibold text-slate-800">
-                        C. รูปแบบไฟล์และการเข้าถึง
-                      </p>
-                      <button
-                        type="button"
-                        class="section-toggle toggle-pill"
-                        data-state="hidden"
-                      >
-                        <span class="toggle-knob"></span>
-                        <span class="toggle-label">แสดง</span>
+                  <div class="section-card rounded-lg bg-white border border-slate-200 px-3 py-3 space-y-3 shadow-sm">
+                    <div class="section-header flex items-center justify-between select-none">
+                      <p class="text-sm font-semibold text-slate-800">C. รูปแบบไฟล์และการเข้าถึง</p>
+                      <button type="button" class="section-toggle toggle-pill" data-state="hidden">
+                        <span class="toggle-knob"></span><span class="toggle-label">แสดง</span>
                       </button>
                     </div>
                     <div class="section-body space-y-3 hidden">
-                      <!-- 11 fieldset -->
-                      <fieldset
-                        class="border border-slate-200 rounded-lg px-3 py-3"
-                      >
-                        <legend
-                          class="block text-sm font-medium text-slate-700"
-                        >
-                          11. File Format (สามารถระบุได้หลายค่า)
-                        </legend>
-                        <div class="flex flex-wrap gap-3 text-sm">
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="formatGeoTIFF[]"
-                              value="GeoTIFF"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>GeoTIFF</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="formatIMG[]"
-                              value="IMG"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>IMG</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="formatASC[]"
-                              value="ASC"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>ASC</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="formatLAS[]"
-                              value="LAS/LAZ"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>LAS/LAZ</span>
-                          </label>
-
-                          <label
-                            class="inline-flex items-center gap-2 flex-1 min-w-[220px]"
-                          >
-                            <input
-                              type="checkbox"
-                              name="formatOtherFlag[]"
-                              value="other"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>อื่น ๆ</span>
-                            <input
-                              type="text"
-                              name="formatOther[]"
-                              class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="ระบุรูปแบบไฟล์อื่น ๆ"
-                            />
-                          </label>
-                        </div>
-                      </fieldset>
-
-                      <!-- 12 + 13 ในบรรทัดเดียวกัน -->
-                      <div class="flex flex-col gap-3 md:flex-row md:items-start md:flex-wrap">
-                        <div class="md:flex-1 md:min-w-[220px]">
-                          <label class="block text-sm font-medium text-slate-700 mb-1">12. ขนาดไฟล์</label>
-                          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-                            <div class="w-full sm:w-1/2">
-                              <input
-                                type="number"
-                                step="0.01"
-                                name="fileSize[]"
-                                class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="เช่น 120"
-                              />
+                        <fieldset class="border border-slate-200 rounded-lg px-3 py-3">
+                            <legend class="block text-sm font-medium text-slate-700">11. File Format (สามารถระบุได้หลายค่า)</legend>
+                            <div class="flex flex-wrap gap-3 text-sm">
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="formatGeoTIFF[]" value="GeoTIFF" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>GeoTIFF</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="formatIMG[]" value="IMG" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>IMG</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="formatASC[]" value="ASC" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>ASC</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="formatLAS[]" value="LAS/LAZ" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>LAS/LAZ</span></label>
+                                <label class="inline-flex items-center gap-2 flex-1 min-w-[220px]">
+                                    <input type="checkbox" name="formatOtherFlag[]" value="other" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>อื่น ๆ</span>
+                                    <input type="text" name="formatOther[]" class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุรูปแบบไฟล์อื่น ๆ">
+                                </label>
                             </div>
-                            <div class="w-full sm:w-1/2">
-                              <select
-                                name="fileSizeUnit[]"
-                                class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              >
-                                <option value="">-- หน่วย --</option>
-                                <option value="TB">TB</option>
-                                <option value="GB">GB</option>
-                                <option value="MB">MB</option>
-                                <option value="KB">KB</option>
-                              </select>
+                        </fieldset>
+                        <div class="flex flex-col gap-3 md:flex-row md:items-start md:flex-wrap">
+                            <div class="md:flex-1 md:min-w-[220px]">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">12. ขนาดไฟล์</label>
+                                <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                                    <div class="w-full sm:w-1/2">
+                                        <input type="text" name="fileSize[]" class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="เช่น 120" />
+                                    </div>
+                                    <div class="w-full sm:w-1/2">
+                                        <select name="fileSizeUnit[]" class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="">-- หน่วย --</option><option value="TB">TB</option><option value="GB">GB</option><option value="MB">MB</option><option value="KB">KB</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
+                            <div class="md:flex-1 md:min-w-[220px]">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">13. ลิขสิทธิ์</label>
+                                <select name="license[]" class="license-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">-- เลือกลิขสิทธิ์ --</option><option value="open">Open Data</option><option value="internal">Internal</option><option value="exchange">Exchange</option><option value="restricted">Security Restricted</option><option value="other">อื่น ๆ (ระบุ)</option>
+                                </select>
+                                <div class="license-other-wrapper mt-2 hidden">
+                                    <input type="text" name="licenseOther[]" class="license-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุประเภทลิขสิทธิ์อื่น ๆ" disabled />
+                                </div>
+                            </div>
                         </div>
-                      
-                        <div class="md:flex-1 md:min-w-[220px]">
-                          <label class="block text-sm font-medium text-slate-700 mb-1">13. ลิขสิทธิ์</label>
-                          <select
-                            name="license[]"
-                            class="license-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          >
-                            <option value="">-- เลือกลิขสิทธิ์ --</option>
-                            <option value="open">Open Data</option>
-                            <option value="internal">Internal</option>
-                            <option value="exchange">Exchange</option>
-                            <option value="restricted">Security Restricted</option>
-                            <option value="other">อื่น ๆ (ระบุ)</option>
-                          </select>
-                          <div class="license-other-wrapper mt-2 hidden">
-                            <input
-                              type="text"
-                              name="licenseOther[]"
-                              class="license-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="ระบุประเภทลิขสิทธิ์อื่น ๆ"
-                              disabled
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- 14 fieldset -->
-                      <fieldset
-                        class="border border-slate-200 rounded-lg px-3 py-3"
-                      >
-                        <legend
-                          class="block text-sm font-medium text-slate-700"
-                        >
-                          14. ช่องทางการเข้าถึง (สามารถระบุได้หลายค่า)
-                        </legend>
-                        <div class="flex flex-wrap gap-3 text-sm">
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="accessWeb[]"
-                              value="web"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>เว็บดาวน์โหลด</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="accessOfficial[]"
-                              value="official_letter"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>หนังสือราชการ</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="accessMou[]"
-                              value="mou_nda"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>MOU / NDA</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="accessInternal[]"
-                              value="internal"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>ภายในหน่วยงาน</span>
-                          </label>
-
-                          <label
-                            class="inline-flex items-center gap-2 flex-1 min-w-[220px]"
-                          >
-                            <input
-                              type="checkbox"
-                              name="accessOtherFlag[]"
-                              value="other"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>อื่น ๆ</span>
-                            <input
-                              type="text"
-                              name="accessOther[]"
-                              class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="ระบุช่องทางอื่น ๆ"
-                            />
-                          </label>
-                        </div>
-                      </fieldset>
+                        <fieldset class="border border-slate-200 rounded-lg px-3 py-3">
+                            <legend class="block text-sm font-medium text-slate-700">14. ช่องทางการเข้าถึง (สามารถระบุได้หลายค่า)</legend>
+                            <div class="flex flex-wrap gap-3 text-sm">
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="accessWeb[]" value="web" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>เว็บดาวน์โหลด</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="accessOfficial[]" value="official_letter" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>หนังสือราชการ</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="accessMou[]" value="mou_nda" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>MOU / NDA</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="accessInternal[]" value="internal" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>ภายในหน่วยงาน</span></label>
+                                <label class="inline-flex items-center gap-2 flex-1 min-w-[220px]">
+                                    <input type="checkbox" name="accessOtherFlag[]" value="other" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>อื่น ๆ</span>
+                                    <input type="text" name="accessOther[]" class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุช่องทางอื่น ๆ">
+                                </label>
+                            </div>
+                        </fieldset>
                     </div>
                   </div>
 
-                  <!-- D. คุณภาพและการใช้งาน -->
-                  <div
-                    class="section-card rounded-lg bg-white border border-slate-200 px-3 py-3 space-y-3 shadow-sm"
-                  >
-                    <div
-                      class="section-header flex items-center justify-between select-none"
-                    >
-                      <p class="text-sm font-semibold text-slate-800">
-                        D. คุณภาพและการใช้งาน
-                      </p>
-                      <button
-                        type="button"
-                        class="section-toggle toggle-pill"
-                        data-state="hidden"
-                      >
-                        <span class="toggle-knob"></span>
-                        <span class="toggle-label">แสดง</span>
+                  <div class="section-card rounded-lg bg-white border border-slate-200 px-3 py-3 space-y-3 shadow-sm">
+                    <div class="section-header flex items-center justify-between select-none">
+                      <p class="text-sm font-semibold text-slate-800">D. คุณภาพและการใช้งาน</p>
+                      <button type="button" class="section-toggle toggle-pill" data-state="hidden">
+                        <span class="toggle-knob"></span><span class="toggle-label">แสดง</span>
                       </button>
                     </div>
                     <div class="section-body space-y-3 hidden">
-                      <!-- 15 fieldset -->
-                      <fieldset
-                        class="border border-slate-200 rounded-lg px-3 py-3"
-                      >
-                        <legend
-                          class="block text-sm font-medium text-slate-700"
-                        >
-                          15. QC/QA (สามารถระบุได้หลายค่า)
-                        </legend>
-                        <div class="flex flex-wrap gap-3 text-sm">
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="qcNone[]"
-                              value="none"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>ไม่มี</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="qcGcp[]"
-                              value="GCP"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>GCP</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="qcOtherDEM[]"
-                              value="compare_dem"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>เปรียบเทียบ DEM อื่น</span>
-                          </label>
-                          <label
-                            class="inline-flex items-center gap-2 flex-1 min-w-[220px]"
-                          >
-                            <input
-                              type="checkbox"
-                              name="qcOtherFlag[]"
-                              value="other"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>อื่น ๆ</span>
-                            <input
-                              type="text"
-                              name="qcOther[]"
-                              class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="ระบุวิธี QC/QA อื่น ๆ"
-                            />
-                          </label>
+                        <fieldset class="border border-slate-200 rounded-lg px-3 py-3">
+                            <legend class="block text-sm font-medium text-slate-700">15. QC/QA (สามารถระบุได้หลายค่า)</legend>
+                            <div class="flex flex-wrap gap-3 text-sm">
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="qcNone[]" value="none" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>ไม่มี</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="qcGcp[]" value="GCP" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>GCP</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="qcOtherDEM[]" value="compare_dem" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>เปรียบเทียบ DEM อื่น</span></label>
+                                <label class="inline-flex items-center gap-2 flex-1 min-w-[220px]">
+                                    <input type="checkbox" name="qcOtherFlag[]" value="other" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>อื่น ๆ</span>
+                                    <input type="text" name="qcOther[]" class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุวิธี QC/QA อื่น ๆ">
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="border border-slate-200 rounded-lg px-3 py-3">
+                            <legend class="block text-sm font-medium text-slate-700">16. การใช้งานหลัก (สามารถระบุได้หลายค่า)</legend>
+                            <div class="flex flex-wrap gap-3 text-sm">
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="useFlood[]" value="flood" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>น้ำท่วม</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="useSubBasin[]" value="sub_basin" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>ลุ่มน้ำย่อย</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="useUrbanPlan[]" value="urban_planning" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>ผังเมือง</span></label>
+                                <label class="inline-flex items-center gap-2"><input type="checkbox" name="useModel[]" value="models" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>แบบจำลอง RRI / HEC / MIKE</span></label>
+                                <label class="inline-flex items-center gap-2 flex-1 min-w-[220px]">
+                                    <input type="checkbox" name="useOtherFlag[]" value="other" class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"><span>อื่น ๆ</span>
+                                    <input type="text" name="useOther[]" class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุการใช้งานอื่น ๆ">
+                                </label>
+                            </div>
+                        </fieldset>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">17. หมายเหตุ</label>
+                            <textarea name="remark[]" rows="1" style="resize: vertical; min-height: 2.5rem;" class="block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุหมายเหตุเพิ่มเติม เช่น ปัญหาในการใช้งาน, ข้อจำกัด, แผนการปรับปรุงในอนาคต"></textarea>
                         </div>
-                      </fieldset>
-
-                      <!-- 16 fieldset -->
-                      <fieldset
-                        class="border border-slate-200 rounded-lg px-3 py-3"
-                      >
-                        <legend
-                          class="block text-sm font-medium text-slate-700"
-                        >
-                          16. การใช้งานหลัก (สามารถระบุได้หลายค่า)
-                        </legend>
-                        <div class="flex flex-wrap gap-3 text-sm">
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="useFlood[]"
-                              value="flood"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>น้ำท่วม</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="useSubBasin[]"
-                              value="sub_basin"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>ลุ่มน้ำย่อย</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="useUrbanPlan[]"
-                              value="urban_planning"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>ผังเมือง</span>
-                          </label>
-                          <label class="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="useModel[]"
-                              value="models"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>แบบจำลอง RRI / HEC / MIKE</span>
-                          </label>
-
-                          <label
-                            class="inline-flex items-center gap-2 flex-1 min-w-[220px]"
-                          >
-                            <input
-                              type="checkbox"
-                              name="useOtherFlag[]"
-                              value="other"
-                              class="h-4 w-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                            />
-                            <span>อื่น ๆ</span>
-                            <input
-                              type="text"
-                              name="useOther[]"
-                              class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="ระบุการใช้งานอื่น ๆ"
-                            />
-                          </label>
-                        </div>
-                      </fieldset>
-
-                      <!-- 17 -->
-                      <div>
-                        <label
-                          class="block text-sm font-medium text-slate-700 mb-1"
-                          >17. หมายเหตุ</label
-                        >
-                        <textarea
-                          name="remark[]"
-                          rows="1"
-                          style="resize: vertical; min-height: 2.5rem;"
-                          class="block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="ระบุหมายเหตุเพิ่มเติม เช่น ปัญหาในการใช้งาน, ข้อจำกัด, แผนการปรับปรุงในอนาคต"
-                        ></textarea>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -1100,41 +699,6 @@
       </div>
     </div>
 
-    <!-- Popup ยืนยัน -->
-    <div
-      id="confirmModal"
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40"
-    >
-      <div
-        class="bg-white rounded-2xl shadow-xl max-w-sm w-full mx-4 p-5 border border-slate-200"
-      >
-        <h3
-          id="confirmTitle"
-          class="text-base font-semibold text-slate-800 mb-1"
-        ></h3>
-        <p
-          id="confirmMessage"
-          class="text-sm text-slate-600 mb-4 leading-relaxed"
-        ></p>
-        <div class="flex justify-end gap-2">
-          <button
-            type="button"
-            id="confirmCancel"
-            class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
-          >
-            ยกเลิก
-          </button>
-          <button
-            type="button"
-            id="confirmOk"
-            class="inline-flex items-center justify-center rounded-lg border border-blue-600 bg-blue-600 px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
-          >
-            ยืนยัน
-          </button>
-        </div>
-      </div>
-    </div>
-
     <div
       id="confirmModal"
       class="fixed inset-0 z-50 hidden items-center justify-center bg-gray-900/60 transition-opacity"
@@ -1148,14 +712,12 @@
         >
           ยืนยันล้างข้อมูล
         </h3>
-
         <p
           id="confirmMessage"
           class="text-base text-gray-600 mb-8 text-left leading-relaxed"
         >
           คุณต้องการล้างค่าทั้งหมดในแบบฟอร์มหรือไม่?
         </p>
-
         <div class="flex justify-end gap-3">
           <button
             type="button"
@@ -1175,14 +737,42 @@
       </div>
     </div>
 
+    <div
+      id="successModal"
+      class="fixed inset-0 z-[60] hidden items-center justify-center"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"></div>
+      <div class="relative z-10 w-full max-w-sm transform overflow-hidden rounded-2xl bg-white p-6 text-center shadow-2xl transition-all sm:p-8 scale-100">
+        <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+          <i class="fa-solid fa-check text-3xl text-green-600"></i>
+        </div>
+        <h3 class="mb-2 text-xl font-bold text-slate-800" id="modal-title">
+          บันทึกข้อมูลสำเร็จ!
+        </h3>
+        <p class="mb-6 text-sm text-slate-500">
+          ระบบได้ทำการบันทึกข้อมูลแบบฟอร์มของท่านเรียบร้อยแล้ว
+        </p>
+        <button
+          type="button"
+          id="successOk"
+          class="inline-flex w-full justify-center rounded-xl bg-green-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 transition-all duration-200"
+        >
+          ตกลง
+        </button>
+      </div>
+    </div>
+
     <script>
       // ★★ ใส่ URL Web App ของ Apps Script ที่นี่ ★★
       const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8Wf9vZsQbksaG7dmtWxw2b26xzCxI0Rl1lTlWggIS_rlULBL-wkOjDgRBZuH_vWI5Lw/exec";
-    
+      
       const demContainer = document.getElementById("demItemsContainer");
       const btnAddDemItem = document.getElementById("btnAddDemItem");
       const form = document.getElementById("demSurveyForm");
-    
+      
       // -------------------- บังคับกรอก ส่วนที่ 1 (ข้อมูลหน่วยงาน) --------------------
       const requiredAgencyIds = [
         "agencyName",
@@ -1196,41 +786,69 @@
         const el = document.getElementById(id);
         if (el) el.required = true;
       });
-    
-      // -------------------- ฟอร์แมตและตรวจสอบเบอร์โทร --------------------
-      (function setupPhoneValidation() {
-        const phoneInput = document.getElementById("contactPhone");
-        if (!phoneInput) return;
-    
-        function validatePhone() {
-          const digits = phoneInput.value.replace(/\D/g, "");
-          if (!digits) {
-            phoneInput.setCustomValidity("");
-            return;
-          }
-          if (digits.length !== 9 && digits.length !== 10) {
-            phoneInput.setCustomValidity("กรุณากรอกหมายเลขโทรศัพท์ 9 หรือ 10 หลัก (ไม่ต้องใส่ขีด)");
-          } else {
-            phoneInput.setCustomValidity("");
-          }
-        }
-    
-        function formatPhone() {
-          const digits = phoneInput.value.replace(/\D/g, "");
-          if (digits.length === 9) {
-            phoneInput.value = digits.replace(/^(\d{2})(\d{3})(\d{4})$/, "$1-$2-$3");
-          } else if (digits.length === 10) {
-            phoneInput.value = digits.replace(/^(\d{3})(\d{3})(\d{4})$/, "$1-$2-$3");
-          }
-        }
-    
-        phoneInput.addEventListener("input", validatePhone);
-        phoneInput.addEventListener("blur", () => {
-          validatePhone();
-          formatPhone();
+      
+      // -------------------- ฟังก์ชันจัดการ Input ตัวเลข (ใช้ร่วมกันทั้งเบอร์โทรและทศนิยม) --------------------
+      function setupNumericField(input, type = 'decimal') {
+        if (!input) return;
+
+        // 1. ตั้งค่า Keyboard บนมือถือ
+        input.setAttribute("inputmode", type === 'decimal' ? "decimal" : "numeric");
+
+        // 2. ดักจับตอนพิมพ์ (Input)
+        input.addEventListener("input", function() {
+            let val = this.value;
+
+            if (type === 'decimal') {
+                // --- กรณีทศนิยม (ข้อ 6, 7, 12) ---
+                val = val.replace(/[^0-9.]/g, ""); // ลบตัวอักษรอื่น
+                const parts = val.split('.');
+                if (parts.length > 2) {
+                    val = parts[0] + '.' + parts.slice(1).join(''); // ป้องกันจุดซ้ำ
+                }
+            } else {
+                // --- กรณีเบอร์โทร / จำนวนเต็ม ---
+                val = val.replace(/\D/g, ""); // ลบทุกอย่างที่ไม่ใช่ตัวเลข
+            }
+
+            this.value = val;
+            if (typeof clearError === "function") clearError(this);
+
+            // Validation เฉพาะของเบอร์โทร
+            if (type === 'phone') {
+                 if (val.length > 0 && (val.length < 9 || val.length > 10)) {
+                     this.setCustomValidity("กรุณากรอก 9-10 หลัก");
+                 } else {
+                     this.setCustomValidity("");
+                 }
+            }
         });
-      })();
-    
+
+        // 3. ดักจับตอน Focus (คลิกที่ช่อง) -> ลบขีดออกเพื่อให้แก้ตัวเลขง่าย
+        input.addEventListener("focus", function() {
+             if (type === 'decimal') {
+                 this.value = this.value.replace(/[^0-9.]/g, "");
+             } else {
+                 this.value = this.value.replace(/\D/g, "");
+             }
+        });
+        
+        // 4. ดักจับตอน Blur (พิมพ์เสร็จ) -> จัดรูปแบบเฉพาะเบอร์โทร
+        input.addEventListener("blur", function() {
+            if (type === 'phone') {
+                let digits = this.value.replace(/\D/g, "");
+                // จัดรูปแบบขีด (-) อัตโนมัติ
+                if (digits.length === 9) {
+                     this.value = digits.replace(/^(\d{2})(\d{3})(\d{4})$/, "$1-$2-$3");
+                } else if (digits.length === 10) {
+                     this.value = digits.replace(/^(\d{3})(\d{3})(\d{4})$/, "$1-$2-$3");
+                }
+            }
+        });
+      }
+
+      // เรียกใช้กับเบอร์โทรศัพท์ (Section 1)
+      setupNumericField(document.getElementById("contactPhone"), 'phone');
+      
       // -------------------- Confirm Modal --------------------
       const confirmModal = document.getElementById("confirmModal");
       const confirmTitle = document.getElementById("confirmTitle");
@@ -1238,7 +856,7 @@
       const confirmCancel = document.getElementById("confirmCancel");
       const confirmOk = document.getElementById("confirmOk");
       let confirmCallback = null;
-    
+      
       function openConfirmModal(title, message, onConfirm) {
         confirmTitle.textContent = title;
         confirmMessage.textContent = message;
@@ -1246,13 +864,13 @@
         confirmModal.classList.remove("hidden");
         confirmModal.classList.add("flex");
       }
-    
+      
       function closeConfirmModal() {
         confirmModal.classList.add("hidden");
         confirmModal.classList.remove("flex");
         confirmCallback = null;
       }
-    
+      
       confirmCancel.addEventListener("click", closeConfirmModal);
       confirmOk.addEventListener("click", () => {
         if (typeof confirmCallback === "function") {
@@ -1265,18 +883,15 @@
           closeConfirmModal();
         }
       });
-    
-// -------------------- Success Modal Control --------------------
+      
+      // -------------------- Success Modal Control --------------------
       const successModal = document.getElementById("successModal");
       const successOk = document.getElementById("successOk");
 
       function openSuccessModal() {
         if (!successModal) return;
-        // ลบ hidden เพื่อแสดง และจัด layout เป็น flex เพื่อให้ content อยู่กลางจอ
         successModal.classList.remove("hidden");
         successModal.classList.add("flex");
-        
-        // (Optional) สั่งให้ปุ่ม OK โฟกัสทันที เพื่อให้กด Enter ปิดได้เลย
         if(successOk) successOk.focus();
       }
 
@@ -1286,36 +901,31 @@
         successModal.classList.remove("flex");
       }
 
-      // ผูก Event ปุ่มกดปิด
       if (successOk) {
         successOk.addEventListener("click", closeSuccessModal);
       }
-      // กดพื้นหลังเพื่อปิด
       if (successModal) {
         successModal.addEventListener("click", (e) => {
-           // ปิดเฉพาะตอนคลิกที่พื้นหลัง (backdrop) ไม่ใช่คลิกที่กล่อง
            if (e.target === successModal) { 
              closeSuccessModal(); 
            }
         });
       }
-    
-      // ปิด modal ด้วย ESC (ทั้ง confirm + success)
+      
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
           closeConfirmModal();
           closeSuccessModal();
         }
       });
-    
+      
       // -------------------- Year Select (2539–2568) --------------------
       function populateYearSelects() {
         const selects = document.querySelectorAll(".year-select");
         const startBE = 2539;
         const endBE = 2568;
-    
+      
         selects.forEach((sel) => {
-          // ถ้ามี option > 1 (มีข้อมูลแล้ว) ไม่ต้องเติมซ้ำ
           if (sel.options.length > 1) return;
           for (let y = endBE; y >= startBE; y--) {
             const opt = document.createElement("option");
@@ -1323,24 +933,18 @@
             opt.textContent = y.toString();
             sel.appendChild(opt);
           }
-          // ให้ฟอนต์/ขนาดใกล้เคียงกับกล่องข้าง ๆ
           sel.classList.add("text-sm");
         });
       }
-    
-      // -------------------- DEM Index (ข้อมูลชุดที่ X) --------------------
+      
+      // -------------------- DEM Index --------------------
       function updateDemIndexes() {
         const items = demContainer.querySelectorAll(".dem-item");
         items.forEach((item, index) => {
           const idx = index + 1;
-    
-          // เอา badge #1 ออก
           const badge = item.querySelector(".dem-index");
-          if (badge) {
-            badge.style.display = "none";
-          }
-    
-          // ปรับข้อความ "ชุดข้อมูลที่ X" ให้ dynamic
+          if (badge) badge.style.display = "none";
+      
           const header = item.querySelector("h3");
           if (header) {
             let titleSpan = header.querySelector(".dem-title-text");
@@ -1348,8 +952,6 @@
               titleSpan = document.createElement("span");
               titleSpan.className = "dem-title-text";
               titleSpan.style.marginLeft = "4px";
-    
-              // ลบ text node เดิมใน h3 (เช่น "ข้อมูลชุดที่ 1")
               const toRemove = [];
               header.childNodes.forEach((node) => {
                 if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
@@ -1357,7 +959,6 @@
                 }
               });
               toRemove.forEach((n) => header.removeChild(n));
-    
               const removeBtn = header.querySelector(".btn-remove-dem-item");
               if (removeBtn) {
                 header.insertBefore(titleSpan, removeBtn);
@@ -1367,7 +968,7 @@
             }
             titleSpan.textContent = `ชุดข้อมูลที่ ${idx}`;
           }
-    
+      
           const removeBtn = item.querySelector(".btn-remove-dem-item");
           if (removeBtn) {
             if (items.length === 1) {
@@ -1375,14 +976,13 @@
             } else {
               removeBtn.classList.remove("hidden");
             }
-            // ปรับปุ่มลบให้พื้นหลังแดง ตัวหนังสือขาว
             removeBtn.classList.add("bg-rose-600", "text-white", "border", "border-rose-600", "hover:bg-rose-700");
             removeBtn.classList.remove("bg-white");
           }
         });
       }
-    
-      // -------------------- แสดง/ซ่อน Section Card ในแต่ละ DEM --------------------
+      
+      // -------------------- Section Toggles --------------------
       function setSectionVisibility(card, visible) {
         const body = card.querySelector(".section-body");
         const toggleBtn = card.querySelector(".section-toggle");
@@ -1398,30 +998,26 @@
           if (label) label.textContent = "แสดง";
         }
       }
-    
+      
       function attachSectionToggles(item) {
         const cards = item.querySelectorAll(".section-card");
-    
-        // เริ่มต้น: แสดงเฉพาะ A
         cards.forEach((card, idx) => {
           setSectionVisibility(card, idx === 0);
         });
-    
+      
         cards.forEach((card) => {
           const body = card.querySelector(".section-body");
           const toggleBtn = card.querySelector(".section-toggle");
           if (!body || !toggleBtn) return;
-    
           toggleBtn.addEventListener("click", () => {
             const currentlyHidden = body.classList.contains("hidden");
             setSectionVisibility(card, currentlyHidden);
           });
         });
-    
+      
         const itemToggle = item.querySelector(".item-toggle-all");
         if (itemToggle) {
           const labelAll = itemToggle.querySelector(".toggle-label");
-    
           const refreshItemToggleState = () => {
             const innerCards = item.querySelectorAll(".section-card");
             const anyHidden = Array.from(innerCards).some((c) =>
@@ -1430,9 +1026,7 @@
             itemToggle.dataset.state = anyHidden ? "hidden" : "shown";
             if (labelAll) labelAll.textContent = anyHidden ? "แสดง" : "ซ่อน";
           };
-    
           refreshItemToggleState();
-    
           itemToggle.addEventListener("click", () => {
             const makeVisible = itemToggle.dataset.state === "hidden";
             const innerCards = item.querySelectorAll(".section-card");
@@ -1442,7 +1036,6 @@
             itemToggle.dataset.state = makeVisible ? "shown" : "hidden";
             if (labelAll) labelAll.textContent = makeVisible ? "ซ่อน" : "แสดง";
           });
-    
           cards.forEach((card) => {
             const btn = card.querySelector(".section-toggle");
             if (!btn) return;
@@ -1452,10 +1045,9 @@
           });
         }
       }
-    
-      // -------------------- Reference data (จังหวัด / ลุ่มน้ำ) --------------------
+      
+      // -------------------- Reference data --------------------
       let REF_DATA = null;
-    
       function populateSelectOptions(selectEl, values) {
         if (!selectEl) return;
         const currentSelected = Array.from(selectEl.options)
@@ -1470,12 +1062,11 @@
           selectEl.appendChild(opt);
         });
       }
-    
+      
       function applyReferenceDataToAllItems() {
         if (!REF_DATA) return;
         const basins = REF_DATA.basins || [];
         const provinces = REF_DATA.provinces || [];
-    
         document
           .querySelectorAll(".basin-select")
           .forEach((sel) => populateSelectOptions(sel, basins));
@@ -1483,7 +1074,7 @@
           .querySelectorAll(".province-select")
           .forEach((sel) => populateSelectOptions(sel, provinces));
       }
-    
+      
       async function initReferenceDropdowns() {
         try {
           const resp = await fetch(APPS_SCRIPT_URL + "?action=getReferenceData");
@@ -1494,24 +1085,8 @@
           console.error("getReferenceData error", err);
         }
       }
-    
-      // -------------------- Helper: อื่น ๆ + checkbox flag --------------------
-      function setupOtherWithFlag(item, flagName, inputName) {
-        const flag = item.querySelector(`input[name="${flagName}"]`);
-        const input = item.querySelector(`input[name="${inputName}"]`);
-        if (!flag || !input) return;
-    
-        const update = () => {
-          const on = flag.checked;
-          input.disabled = !on;
-          if (!on) input.value = "";
-        };
-    
-        flag.addEventListener("change", update);
-        update();
-      }
-    
-      // -------------------- Attach handlers ให้ DEM item 1 ใบ --------------------
+      
+      // -------------------- Attach handlers (Main Logic) --------------------
       function markSectionARequired(item) {
         const demName = item.querySelector('input[name="demName[]"]');
         const sourceSelect = item.querySelector('select[name="sourceType[]"]');
@@ -1520,50 +1095,49 @@
         if (sourceSelect) sourceSelect.required = true;
         if (yearSelect) yearSelect.required = true;
       }
-    
-      // -------------------- Attach handlers ให้ DEM item 1 ใบ --------------------
+      
       function attachOtherFieldHandlers(item) {
         if (!item) return;
 
-        // เรียกฟังก์ชันย่อยต่างๆ
         attachSectionToggles(item);
         markSectionARequired(item);
+
+        // ★★★ บังคับกรอกตัวเลขข้อ 6, 7, 12 ★★★
+        const verticalAccInput = item.querySelector('input[name="verticalAccuracy[]"]');
+        const horizontalAccInput = item.querySelector('input[name="horizontalAccuracy[]"]');
+        const fileSizeInput = item.querySelector('input[name="fileSize[]"]');
+
+        setupNumericField(verticalAccInput, 'decimal');
+        setupNumericField(horizontalAccInput, 'decimal');
+        setupNumericField(fileSizeInput, 'decimal');
 
         // ---- Tag Stack Helper ----
         function setupTagStack(selectEl, tagsContainer, hiddenInput) {
           if (!selectEl || !tagsContainer || !hiddenInput) return;
           let values = [];
-
           function renderTags() {
             tagsContainer.innerHTML = "";
             values.forEach((val) => {
               const span = document.createElement("span");
               span.className = "tag-pill";
               span.dataset.value = val;
-              span.innerHTML = `
-                <span class="tag-text">${val}</span>
-                <span class="tag-remove">×</span>
-              `;
+              span.innerHTML = `<span class="tag-text">${val}</span><span class="tag-remove">×</span>`;
               tagsContainer.appendChild(span);
             });
             hiddenInput.value = values.join(", ");
           }
-
           function addValue(val) {
             const v = (val || "").trim();
             if (!v || values.includes(v)) return;
             values.push(v);
             renderTags();
           }
-
           function removeValue(val) {
             const idx = values.indexOf(val);
             if (idx === -1) return;
             values.splice(idx, 1);
             renderTags();
           }
-
-          // ดับเบิลคลิกที่ option เพื่อเพิ่มแท็ก
           selectEl.addEventListener("dblclick", () => {
             const opt = selectEl.options[selectEl.selectedIndex];
             const text = opt ? opt.textContent.trim() : "";
@@ -1574,8 +1148,6 @@
               addValue(text);
             }
           });
-
-          // คลิกกากบาทเพื่อลบ
           tagsContainer.addEventListener("click", (e) => {
             const removeBtn = e.target.closest(".tag-remove");
             if (!removeBtn) return;
@@ -1591,7 +1163,6 @@
         // ---- Search Filter Helper ----
         function setupSearchFilter(selectEl, searchInput) {
           if (!selectEl || !searchInput) return;
-
           searchInput.addEventListener("input", () => {
             const term = searchInput.value.trim().toLowerCase();
             const opts = Array.from(selectEl.options);
@@ -1610,7 +1181,6 @@
           });
         }
 
-        // ---- Source (แหล่งที่มา) ----
         const sourceSelect = item.querySelector(".source-select");
         const sourceOtherWrapper = item.querySelector(".source-other-wrapper");
         const sourceOtherInput = item.querySelector(".source-other-input");
@@ -1622,13 +1192,11 @@
             if (show) sourceOtherInput.focus();
             else sourceOtherInput.value = "";
           });
-          // initial
           const show = sourceSelect.value === "other";
           sourceOtherWrapper.classList.toggle("hidden", !show);
           sourceOtherInput.disabled = !show;
         }
 
-        // ---- Resolution ----
         const resSelect = item.querySelector(".resolution-select");
         const resOtherWrapper = item.querySelector(".resolution-other-wrapper");
         const resOtherInput = item.querySelector(".resolution-other-input");
@@ -1645,7 +1213,6 @@
           updateRes();
         }
 
-        // ---- Vertical Datum ----
         const vDatumSelect = item.querySelector(".vertical-datum-select");
         const vDatumWrapper = item.querySelector(".vertical-datum-other-wrapper");
         const vDatumInput = item.querySelector(".vertical-datum-other-input");
@@ -1661,7 +1228,6 @@
           updateVD();
         }
 
-        // ---- Coordinate System ----
         const coordSelect = item.querySelector(".coord-select");
         const coordWrapper = item.querySelector(".coord-other-wrapper");
         const coordInput = item.querySelector(".coord-other-input");
@@ -1677,7 +1243,6 @@
           updateCoord();
         }
 
-        // ---- License ----
         const licSelect = item.querySelector(".license-select");
         const licWrapper = item.querySelector(".license-other-wrapper");
         const licInput = item.querySelector(".license-other-input");
@@ -1693,18 +1258,15 @@
           updateLic();
         }
 
-        // ---- พื้นที่ครอบคลุม (Logic ใหม่: ไทยปิดหมด / ไม่ใช่ไทยเลือกได้หลายอัน) ----
+        // พื้นที่ครอบคลุม
         const coverageCountryCb = item.querySelector('input[name="coverageCountry[]"]');
         const basinToggle = item.querySelector(".toggle-basin");
         const provinceToggle = item.querySelector(".toggle-province");
         const localToggle = item.querySelector(".toggle-local");
-
         const basinBlock = item.querySelector(".basin-block");
         const provinceBlock = item.querySelector(".province-block");
         const localBlock = item.querySelector(".local-block");
         const localInput = item.querySelector(".local-input");
-        
-        // ตัวแปรสำหรับล้างค่า
         const basinTags = item.querySelector(".basin-tags");
         const basinHidden = item.querySelector(".basin-other-input");
         const provinceTags = item.querySelector(".province-tags");
@@ -1712,30 +1274,22 @@
 
         function updateCoverageGroup() {
           const isCountryChecked = coverageCountryCb && coverageCountryCb.checked;
-
           if (isCountryChecked) {
-            // 1. กรณีเลือก "ประเทศไทยทั้งหมด" -> ปิดและล้างค่าอื่น
             if (basinToggle) { basinToggle.checked = false; basinToggle.disabled = true; }
             if (provinceToggle) { provinceToggle.checked = false; provinceToggle.disabled = true; }
             if (localToggle) { localToggle.checked = false; localToggle.disabled = true; }
-
             if (basinBlock) basinBlock.classList.add("hidden");
             if (provinceBlock) provinceBlock.classList.add("hidden");
             if (localBlock) localBlock.classList.add("hidden");
-
-            // ล้างค่า
             if (basinTags) basinTags.innerHTML = "";
             if (basinHidden) basinHidden.value = "";
             if (provinceTags) provinceTags.innerHTML = "";
             if (provinceHidden) provinceHidden.value = "";
             if (localInput) { localInput.value = ""; localInput.disabled = true; }
-            
           } else {
-            // 2. กรณี "ไม่เลือก" ประเทศไทย -> เปิดให้เลือกได้อิสระ
             if (basinToggle) basinToggle.disabled = false;
             if (provinceToggle) provinceToggle.disabled = false;
             if (localToggle) localToggle.disabled = false;
-
             if (basinBlock && basinToggle) {
               basinBlock.classList.toggle("hidden", !basinToggle.checked);
             }
@@ -1756,20 +1310,16 @@
         if (provinceToggle) provinceToggle.addEventListener("change", updateCoverageGroup);
         if (localToggle) localToggle.addEventListener("change", updateCoverageGroup);
 
-        // ---- Tag Stack ลุ่มน้ำ / จังหวัด ----
         const basinSelect = item.querySelector(".basin-select");
         const provinceSelect = item.querySelector(".province-select");
-        
         setupTagStack(basinSelect, basinTags, basinHidden);
         setupTagStack(provinceSelect, provinceTags, provinceHidden);
 
-        // ---- Search filter ----
         const basinSearch = item.querySelector(".basin-search");
         const provinceSearch = item.querySelector(".province-search");
         setupSearchFilter(basinSelect, basinSearch);
         setupSearchFilter(provinceSelect, provinceSearch);
 
-        // ---- ช่อง "อื่น ๆ" ที่ใช้ checkbox flag คุมการพิมพ์ ----
         function setupOtherWithFlag(itm, flagName, inputName) {
             const flag = itm.querySelector(`input[name="${flagName}"]`);
             const input = itm.querySelector(`input[name="${inputName}"]`);
@@ -1789,7 +1339,6 @@
         setupOtherWithFlag(item, "qcOtherFlag[]", "qcOther[]");
         setupOtherWithFlag(item, "useOtherFlag[]", "useOther[]");
 
-        // ---- ปุ่มลบ DEM ----
         const removeBtn = item.querySelector(".btn-remove-dem-item");
         if (removeBtn) {
           removeBtn.addEventListener("click", () => {
@@ -1797,24 +1346,18 @@
             updateDemIndexes();
           });
         }
-
-        // เรียกครั้งแรกเพื่อจัด state เริ่มต้น
         updateCoverageGroup();
       }
-    
-      // -------------------- Init item แรก --------------------
+      
       const firstItem = demContainer.querySelector(".dem-item");
       attachOtherFieldHandlers(firstItem);
       populateYearSelects();
       updateDemIndexes();
       initReferenceDropdowns();
-    
-      // -------------------- เพิ่ม DEM item --------------------
+      
       btnAddDemItem.addEventListener("click", () => {
         const first = demContainer.querySelector(".dem-item");
         const clone = first.cloneNode(true);
-    
-        // ล้างค่าทั้งหมดใน clone
         clone.querySelectorAll("input, textarea, select").forEach((el) => {
           if (el.tagName === "SELECT") {
             el.selectedIndex = 0;
@@ -1828,28 +1371,12 @@
             el.disabled = true;
           }
         });
-    
-        // ซ่อน/ปิด other fields (dropdown-อื่นๆ)
-        clone
-          .querySelectorAll(
-            ".source-other-wrapper, .resolution-other-wrapper, .vertical-datum-other-wrapper, .coord-other-wrapper, .license-other-wrapper"
-          )
-          .forEach((wrap) => wrap.classList.add("hidden"));
-    
-        clone
-          .querySelectorAll(
-            ".source-other-input, .resolution-other-input, .vertical-datum-other-input, .coord-other-input, .license-other-input"
-          )
-          .forEach((inp) => {
+        clone.querySelectorAll(".source-other-wrapper, .resolution-other-wrapper, .vertical-datum-other-wrapper, .coord-other-wrapper, .license-other-wrapper").forEach((wrap) => wrap.classList.add("hidden"));
+        clone.querySelectorAll(".source-other-input, .resolution-other-input, .vertical-datum-other-input, .coord-other-input, .license-other-input").forEach((inp) => {
             inp.disabled = true;
             inp.value = "";
-          });
-    
-        // ซ่อน block coverage
-        clone
-          .querySelectorAll(".basin-block, .province-block")
-          .forEach((b) => b.classList.add("hidden"));
-    
+        });
+        clone.querySelectorAll(".basin-block, .province-block").forEach((b) => b.classList.add("hidden"));
         const cloneLocalBlock = clone.querySelector(".local-block");
         const cloneLocalInput = clone.querySelector(".local-input");
         const cloneLocalToggle = clone.querySelector(".toggle-local");
@@ -1859,16 +1386,8 @@
           cloneLocalInput.value = "";
           cloneLocalToggle.checked = false;
         }
-    
-        // ล้าง Tag Stack
-        clone
-          .querySelectorAll(".basin-tags, .province-tags")
-          .forEach((c) => (c.innerHTML = ""));
-        clone
-          .querySelectorAll(".basin-other-input, .province-other-input")
-          .forEach((inp) => (inp.value = ""));
-    
-        // ล้าง search box + unhide ทุก option
+        clone.querySelectorAll(".basin-tags, .province-tags").forEach((c) => (c.innerHTML = ""));
+        clone.querySelectorAll(".basin-other-input, .province-other-input").forEach((inp) => (inp.value = ""));
         const basinSearch = clone.querySelector(".basin-search");
         const basinSelect = clone.querySelector(".basin-select");
         if (basinSearch) basinSearch.value = "";
@@ -1881,15 +1400,13 @@
         if (provinceSelect) {
           Array.from(provinceSelect.options).forEach((opt) => (opt.hidden = false));
         }
-    
         demContainer.appendChild(clone);
         attachOtherFieldHandlers(clone);
         populateYearSelects();
         updateDemIndexes();
         applyReferenceDataToAllItems();
       });
-    
-      // -------------------- Reset Form --------------------
+      
       const resetBtn = document.getElementById("btnResetForm");
       resetBtn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -1898,19 +1415,14 @@
           "คุณต้องการล้างค่าทั้งหมดในแบบฟอร์มหรือไม่?",
           () => {
             form.reset();
-    
-            // ลบ DEM item ทั้งหมด ยกเว้นตัวแรก
             const items = demContainer.querySelectorAll(".dem-item");
             items.forEach((item, idx) => {
               if (idx > 0) {
                 item.remove();
               }
             });
-    
             const first = demContainer.querySelector(".dem-item");
             if (!first) return;
-    
-            // ล้างสถานะเพิ่มเติมใน item แรก
             const basinBlock = first.querySelector(".basin-block");
             const provinceBlock = first.querySelector(".province-block");
             const basinTags = first.querySelector(".basin-tags");
@@ -1924,21 +1436,19 @@
             const basinSelect = first.querySelector(".basin-select");
             const provinceSearch = first.querySelector(".province-search");
             const provinceSelect = first.querySelector(".province-select");
-    
+      
             if (basinBlock) basinBlock.classList.add("hidden");
             if (provinceBlock) provinceBlock.classList.add("hidden");
             if (basinTags) basinTags.innerHTML = "";
             if (provinceTags) provinceTags.innerHTML = "";
             if (basinHidden) basinHidden.value = "";
             if (provinceHidden) provinceHidden.value = "";
-    
             if (localBlock) localBlock.classList.add("hidden");
             if (localInput) {
               localInput.value = "";
               localInput.disabled = true;
             }
             if (localToggle) localToggle.checked = false;
-    
             if (basinSearch) basinSearch.value = "";
             if (basinSelect) {
               Array.from(basinSelect.options).forEach((opt) => (opt.hidden = false));
@@ -1947,18 +1457,14 @@
             if (provinceSelect) {
               Array.from(provinceSelect.options).forEach((opt) => (opt.hidden = false));
             }
-    
-            // รีเซ็ตช่อง other + flag
             attachOtherFieldHandlers(first);
-    
             populateYearSelects();
             updateDemIndexes();
             applyReferenceDataToAllItems();
           }
         );
       });
-    
-      // -------------------- Collect & Submit --------------------
+      
       function getCheckedValues(container, selector, excludeOther) {
         let vals = Array.from(
           container.querySelectorAll(selector + ":checked")
@@ -1972,227 +1478,126 @@
         }
         return vals;
       }
-    
+      
       function collectFormData() {
         const agency = {
           agencyName: document.getElementById("agencyName").value.trim(),
           subUnit: document.getElementById("subUnit").value.trim(),
           contactName: document.getElementById("contactName").value.trim(),
-          contactPosition: document
-            .getElementById("contactPosition")
-            .value.trim(),
+          contactPosition: document.getElementById("contactPosition").value.trim(),
           contactPhone: document.getElementById("contactPhone").value.trim(),
           contactEmail: document.getElementById("contactEmail").value.trim(),
         };
-    
         const items = [];
         const demItems = demContainer.querySelectorAll(".dem-item");
         demItems.forEach((item) => {
           const itemData = {};
-    
-          // A. ข้อมูลทั่วไป
+          itemData.demName = item.querySelector('input[name="demName[]"]')?.value.trim() || "";
           const sourceSelect = item.querySelector('select[name="sourceType[]"]');
-          const sourceOtherInput = item.querySelector(
-            'input[name="sourceOther[]"]'
-          );
-    
-          itemData.demName =
-            item.querySelector('input[name="demName[]"]')?.value.trim() || "";
-    
+          const sourceOtherInput = item.querySelector('input[name="sourceOther[]"]');
           if (sourceSelect) {
             if (sourceSelect.value === "other") {
-              itemData.sourceType =
-                (sourceOtherInput?.value || "").trim();
+              itemData.sourceType = (sourceOtherInput?.value || "").trim();
             } else {
               itemData.sourceType = sourceSelect.value || "";
             }
           } else {
             itemData.sourceType = "";
           }
-    
-          itemData.year =
-            item.querySelector('select[name="year[]"]')?.value || "";
+          itemData.year = item.querySelector('select[name="year[]"]')?.value || "";
 
-          const rawCountry = getCheckedValues(
-            item,
-            'input[name="coverageCountry[]"]',
-            false
-          );
-          // ถ้าใน array มีค่า "thailand_all" ให้เปลี่ยนเป็น "ทั่วประเทศ"
+          // ★★★ แก้ไข: แปลงค่า 'thailand_all' เป็น 'ทั่วประเทศ' ★★★
+          const rawCountry = getCheckedValues(item, 'input[name="coverageCountry[]"]', false);
           itemData.coverageCountry = rawCountry.map(val => 
               val === 'thailand_all' ? 'ทั่วประเทศ' : val
           );
+          // ★★★ ลบบรรทัดที่เคยเขียนทับค่านี้ทิ้งไปแล้ว ★★★
+
+          itemData.coverageBasinTags = item.querySelector(".basin-other-input")?.value.trim() || "";
+          itemData.coverageProvinceTags = item.querySelector(".province-other-input")?.value.trim() || "";
+          itemData.coverageLocal = item.querySelector('input[name="coverageLocal[]"]')?.value.trim() || "";
           
-          itemData.coverageBasinTags =
-            item.querySelector(".basin-other-input")?.value.trim() || "";
-    
-          // พื้นที่ครอบคลุม
-          itemData.coverageCountry = getCheckedValues(
-            item,
-            'input[name="coverageCountry[]"]',
-            false
-          );
-          itemData.coverageBasinTags =
-            item.querySelector(".basin-other-input")?.value.trim() || "";
-          itemData.coverageProvinceTags =
-            item.querySelector(".province-other-input")?.value.trim() || "";
-          itemData.coverageLocal =
-            item.querySelector('input[name="coverageLocal[]"]')?.value.trim() ||
-            "";
-    
-          // B. คุณภาพเชิงพื้นที่
           const resSelect = item.querySelector('select[name="resolution[]"]');
-          const resOtherInput = item.querySelector(
-            'input[name="resolutionOther[]"]'
-          );
+          const resOtherInput = item.querySelector('input[name="resolutionOther[]"]');
           if (resSelect) {
-            if (
-              resSelect.value === "other" ||
-              resSelect.value === "lidar_sub1m"
-            ) {
-              itemData.resolution =
-                (resOtherInput?.value || "").trim();
+            if (resSelect.value === "other" || resSelect.value === "lidar_sub1m") {
+              itemData.resolution = (resOtherInput?.value || "").trim();
             } else {
               itemData.resolution = resSelect.value || "";
             }
           } else {
             itemData.resolution = "";
           }
-    
-          itemData.verticalAccuracy =
-            item.querySelector('input[name="verticalAccuracy[]"]')?.value || "";
-          itemData.horizontalAccuracy =
-            item.querySelector('input[name="horizontalAccuracy[]"]')?.value ||
-            "";
-    
-          const vDatumSelect = item.querySelector(
-            'select[name="verticalDatum[]"]'
-          );
-          const vDatumInput = item.querySelector(
-            'input[name="verticalDatumOther[]"]'
-          );
+          itemData.verticalAccuracy = item.querySelector('input[name="verticalAccuracy[]"]')?.value || "";
+          itemData.horizontalAccuracy = item.querySelector('input[name="horizontalAccuracy[]"]')?.value || "";
+          const vDatumSelect = item.querySelector('select[name="verticalDatum[]"]');
+          const vDatumInput = item.querySelector('input[name="verticalDatumOther[]"]');
           if (vDatumSelect) {
             if (vDatumSelect.value === "other") {
-              itemData.verticalDatum =
-                (vDatumInput?.value || "").trim();
+              itemData.verticalDatum = (vDatumInput?.value || "").trim();
             } else {
               itemData.verticalDatum = vDatumSelect.value || "";
             }
           } else {
             itemData.verticalDatum = "";
           }
-    
           const coordSelect = item.querySelector('select[name="coordSys[]"]');
-          const coordInput = item.querySelector(
-            'input[name="coordSysOther[]"]'
-          );
+          const coordInput = item.querySelector('input[name="coordSysOther[]"]');
           if (coordSelect) {
             if (coordSelect.value === "other") {
-              itemData.coordSys =
-                (coordInput?.value || "").trim();
+              itemData.coordSys = (coordInput?.value || "").trim();
             } else {
               itemData.coordSys = coordSelect.value || "";
             }
           } else {
             itemData.coordSys = "";
           }
-    
-          // วิธีการจัดทำ DEM
-          itemData.demMethods = getCheckedValues(
-            item,
-            'input[name^="demMethod"]',
-            true
-          );
-          const demMethodOtherText =
-            item.querySelector('input[name="demMethodOther[]"]')?.value.trim() ||
-            "";
+          itemData.demMethods = getCheckedValues(item, 'input[name^="demMethod"]', true);
+          const demMethodOtherText = item.querySelector('input[name="demMethodOther[]"]')?.value.trim() || "";
           if (demMethodOtherText) itemData.demMethods.push(demMethodOtherText);
-    
-          // รูปแบบไฟล์
-          itemData.fileFormats = getCheckedValues(
-            item,
-            'input[name^="format"]',
-            true
-          );
-          const formatOtherText =
-            item.querySelector('input[name="formatOther[]"]')?.value.trim() || "";
+          itemData.fileFormats = getCheckedValues(item, 'input[name^="format"]', true);
+          const formatOtherText = item.querySelector('input[name="formatOther[]"]')?.value.trim() || "";
           if (formatOtherText) itemData.fileFormats.push(formatOtherText);
-    
-          itemData.fileSize =
-            item.querySelector('input[name="fileSize[]"]')?.value || "";
-          itemData.fileSizeUnit =
-            item.querySelector('select[name="fileSizeUnit[]"]')?.value || "";
-    
-          // ลิขสิทธิ์
+          itemData.fileSize = item.querySelector('input[name="fileSize[]"]')?.value || "";
+          itemData.fileSizeUnit = item.querySelector('select[name="fileSizeUnit[]"]')?.value || "";
           const licSelect = item.querySelector('select[name="license[]"]');
           const licInput = item.querySelector('input[name="licenseOther[]"]');
           if (licSelect) {
             if (licSelect.value === "other") {
-              itemData.license =
-                (licInput?.value || "").trim();
+              itemData.license = (licInput?.value || "").trim();
             } else {
               itemData.license = licSelect.value || "";
             }
           } else {
             itemData.license = "";
           }
-    
-          // ช่องทางการเข้าถึง
-          itemData.accessChannels = getCheckedValues(
-            item,
-            'input[name^="access"]',
-            true
-          );
-          itemData.accessOther =
-            item.querySelector('input[name="accessOther[]"]')?.value.trim() || "";
-    
-          // QC/QA
+          itemData.accessChannels = getCheckedValues(item, 'input[name^="access"]', true);
+          itemData.accessOther = item.querySelector('input[name="accessOther[]"]')?.value.trim() || "";
           itemData.qcQa = getCheckedValues(item, 'input[name^="qc"]', true);
-          itemData.qcQaOther =
-            item.querySelector('input[name="qcOther[]"]')?.value.trim() || "";
-    
-          // การใช้งาน
-          itemData.mainUses = getCheckedValues(
-            item,
-            'input[name^="use"]',
-            true
-          );
-          itemData.mainUsesOther =
-            item.querySelector('input[name="useOther[]"]')?.value.trim() || "";
-    
-          // หมายเหตุ
-          itemData.remark =
-            item.querySelector('textarea[name="remark[]"]')?.value.trim() || "";
-    
+          itemData.qcQaOther = item.querySelector('input[name="qcOther[]"]')?.value.trim() || "";
+          itemData.mainUses = getCheckedValues(item, 'input[name^="use"]', true);
+          itemData.mainUsesOther = item.querySelector('input[name="useOther[]"]')?.value.trim() || "";
+          itemData.remark = item.querySelector('textarea[name="remark[]"]')?.value.trim() || "";
           items.push(itemData);
         });
-    
         return { agency, items };
       }
 
-      // ฟังก์ชันแสดง Error ที่ input
       function showError(input, message) {
-        // 1. เปลี่ยนเส้นขอบเป็นสีแดง
         input.classList.add("border-red-500", "focus:border-red-500", "focus:ring-red-500");
         input.classList.remove("border-slate-300", "focus:border-blue-500", "focus:ring-blue-500");
-
-        // 2. ตรวจสอบว่ามีข้อความ Error อยู่แล้วไหม ถ้ามีไม่เติมซ้ำ
         const parent = input.parentElement;
         if (!parent.querySelector(".error-text-msg")) {
           const msg = document.createElement("p");
-          msg.className = "error-text-msg text-red-500 text-xs mt-1"; // สไตล์ข้อความสีแดง
+          msg.className = "error-text-msg text-red-500 text-xs mt-1";
           msg.textContent = message;
           parent.appendChild(msg);
         }
       }
 
-      // ฟังก์ชันลบ Error เมื่อ user เริ่มกรอกข้อมูล
       function clearError(input) {
-        // 1. คืนค่าเส้นขอบเป็นสีปกติ
         input.classList.remove("border-red-500", "focus:border-red-500", "focus:ring-red-500");
         input.classList.add("border-slate-300", "focus:border-blue-500", "focus:ring-blue-500");
-
-        // 2. ลบข้อความ Error ทิ้ง
         const parent = input.parentElement;
         const msg = parent.querySelector(".error-text-msg");
         if (msg) {
@@ -2200,43 +1605,29 @@
         }
       }
 
-      // ฟังก์ชันตรวจสอบความถูกต้องทั้งฟอร์ม
       function validateFormCustom() {
         let isValid = true;
         let firstInvalidInput = null;
-
-        // ดึง input, select, textarea ทั้งหมดที่มี attribute 'required'
-        // และต้องไม่ disabled (เพราะฟิลด์ที่ซ่อนเราสั่ง disabled ไว้แล้ว)
         const requiredInputs = form.querySelectorAll("[required]:not([disabled])");
-
         requiredInputs.forEach((input) => {
-          // ถ้าค่าว่าง
           if (!input.value.trim()) {
             showError(input, "* จำเป็น (โปรดระบุ)");
             isValid = false;
             if (!firstInvalidInput) firstInvalidInput = input;
-            
-            // เพิ่ม Event Listener: พิมพ์แล้ว Error หายทันที
             input.addEventListener("input", function() {
                 clearError(this);
-            }, { once: true }); // ทำงานครั้งเดียวแล้วลบ listener ออกเพื่อไม่ให้ซ้ำซ้อน
-            
-            // สำหรับ Select box ใช้ event 'change'
+            }, { once: true });
             input.addEventListener("change", function() {
                 clearError(this);
             }, { once: true });
-
           } else {
             clearError(input);
           }
         });
-
-        // ถ้ามีช่องผิด ให้เลื่อนหน้าจอไปหาช่องแรกที่ผิด
         if (firstInvalidInput) {
           firstInvalidInput.scrollIntoView({ behavior: "smooth", block: "center" });
           firstInvalidInput.focus();
         }
-
         return isValid;
       }
       
@@ -2248,7 +1639,6 @@
           },
           body: JSON.stringify(payload),
         });
-    
         let data = null;
         try {
           data = await resp.json();
@@ -2257,16 +1647,12 @@
         }
         return data || { success: resp.ok };
       }
-    
+      
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-
-        // 1. เรียกใช้ Custom Validation
         if (!validateFormCustom()) {
           return; 
         }
-
-        // 2. ถ้าผ่านแล้ว ค่อยเปิด Modal ยืนยัน
         openConfirmModal(
           "ยืนยันการส่งแบบฟอร์ม",
           "โปรดตรวจสอบข้อมูลให้ถูกต้อง ก่อนยืนยันการส่งแบบฟอร์ม",
@@ -2274,55 +1660,37 @@
             const payload = collectFormData();
             try {
               const res = await submitToAppsScript(payload);
-
               if (res && res.success) {
                 openSuccessModal();
               } else {
                 alert("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
               }
-
-              // 1. Reset Form มาตรฐาน
               form.reset();
-              
-              // ลบ Error แดงค้างเก่า
               form.querySelectorAll(".error-text-msg").forEach(e => e.remove());
               form.querySelectorAll(".border-red-500").forEach(e => {
                   e.classList.remove("border-red-500");
                   e.classList.add("border-slate-300");
               });
-
-              // ลบ DEM item ส่วนเกิน (ประกาศ items ครั้งเดียวตรงนี้)
               const items = demContainer.querySelectorAll(".dem-item");
               items.forEach((item, idx) => {
                 if (idx > 0) item.remove();
               });
-
-              // ===============================================
-              // ล้างค่า Stack และซ่อนกล่องที่ค้างอยู่ใน item แรก
-              // ===============================================
               const first = demContainer.querySelector(".dem-item");
               if (first) {
-                // 1. ล้างป้าย Stack
                 const basinTags = first.querySelector(".basin-tags");
                 const provinceTags = first.querySelector(".province-tags");
                 if (basinTags) basinTags.innerHTML = "";
                 if (provinceTags) provinceTags.innerHTML = "";
-
-                // 2. ล้างค่า Hidden Input
                 const basinHidden = first.querySelector(".basin-other-input");
                 const provinceHidden = first.querySelector(".province-other-input");
                 if (basinHidden) basinHidden.value = "";
                 if (provinceHidden) provinceHidden.value = "";
-
-                // 3. ซ่อนกล่อง
                 const basinBlock = first.querySelector(".basin-block");
                 const provinceBlock = first.querySelector(".province-block");
                 const localBlock = first.querySelector(".local-block");
                 if (basinBlock) basinBlock.classList.add("hidden");
                 if (provinceBlock) provinceBlock.classList.add("hidden");
                 if (localBlock) localBlock.classList.add("hidden");
-
-                // 4. ล้างค่า "พื้นที่เฉพาะจุด"
                 const localInput = first.querySelector(".local-input");
                 if (localInput) {
                     localInput.value = "";
@@ -2330,16 +1698,11 @@
                     localInput.required = false; 
                     clearError(localInput);
                 }
-
-                // เรียกฟังก์ชันนี้เพื่อให้ Logic ปุ่มอื่นๆ กลับมาทำงานถูกต้อง
                 attachOtherFieldHandlers(first);
               }
-
-              // อัปเดตสถานะต่างๆ ให้พร้อมใช้งานใหม่
               populateYearSelects();
               updateDemIndexes();
               applyReferenceDataToAllItems();
-
             } catch (err) {
               console.error("submitDemSurvey error", err);
               alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง");
@@ -2348,6 +1711,5 @@
         );
       });
     </script>
-    
   </body>
 </html>
