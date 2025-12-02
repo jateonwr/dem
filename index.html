@@ -297,8 +297,8 @@
                       class="btn-remove-dem-item inline-flex items-center justify-center rounded-md border border-rose-300 bg-white px-2.5 py-1 text-xm font-medium text-rose-600 hover:bg-rose-500 hover:text-white transition shadow-sm hidden"
                       title="ลบชุดข้อมูลนี้"
                     >
-                      <i class="fa-solid fa-xmark"></i>
-                      <span class="mr-1"> ลบข้อมูล</span>
+                      <i class="fa-solid fa-xmark" px-2></i>
+                      <span class="mr-1">ลบข้อมูล</span>
                     </button>
                   </h3>
                   <div class="flex items-center gap-2">
@@ -541,14 +541,9 @@
                       </button>
                     </div>
                     <div class="section-body space-y-3 hidden">
-                      <div
-                        class="flex flex-col gap-3 lg:flex-row lg:items-end lg:flex-nowrap"
-                      >
+                      <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:flex-nowrap">
                         <div class="lg:flex-1 min-w-[160px]">
-                          <label
-                            class="block text-sm font-medium text-slate-700 mb-1"
-                            >5. Resolution</label
-                          >
+                          <label class="block text-sm font-medium text-slate-700 mb-1">5. Resolution</label>
                           <select
                             name="resolution[]"
                             class="resolution-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -558,12 +553,10 @@
                             <option value="10m">10 m</option>
                             <option value="5m">5 m</option>
                             <option value="1m">1 m</option>
-                            <option value="lidar_sub1m">
-                              ต่ำกว่า 1 m (LiDAR / ระบุ)
-                            </option>
+                            <option value="lidar_sub1m">ต่ำกว่า 1 m (LiDAR / ระบุ)</option>
                             <option value="other">อื่น ๆ (ระบุ)</option>
                           </select>
-                          <div class="resolution-other-wrapper mt-1 hidden">
+                          <div class="resolution-other-wrapper mt-2 hidden">
                             <input
                               type="text"
                               name="resolutionOther[]"
@@ -573,12 +566,9 @@
                             />
                           </div>
                         </div>
-
+                      
                         <div class="lg:flex-1 min-w-[140px]">
-                          <label
-                            class="block text-sm font-medium text-slate-700 mb-1"
-                            >6. Vertical Accuracy (ม.)</label
-                          >
+                          <label class="block text-sm font-medium text-slate-700 mb-1">6. Vertical Accuracy (ม.)</label>
                           <input
                             type="number"
                             step="0.01"
@@ -587,12 +577,9 @@
                             placeholder="เช่น 0.15"
                           />
                         </div>
-
+                      
                         <div class="lg:flex-1 min-w-[140px]">
-                          <label
-                            class="block text-sm font-medium text-slate-700 mb-1"
-                            >7. Horizontal Accuracy (ม.)</label
-                          >
+                          <label class="block text-sm font-medium text-slate-700 mb-1">7. Horizontal Accuracy (ม.)</label>
                           <input
                             type="number"
                             step="0.01"
@@ -603,14 +590,9 @@
                         </div>
                       </div>
 
-                      <div
-                        class="flex flex-col gap-3 lg:flex-row lg:items-end lg:flex-nowrap"
-                      >
+                      <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:flex-nowrap">
                         <div class="lg:basis-1/2 min-w-[160px]">
-                          <label
-                            class="block text-sm font-medium text-slate-700 mb-1"
-                            >8. Vertical Datum</label
-                          >
+                          <label class="block text-sm font-medium text-slate-700 mb-1">8. Vertical Datum</label>
                           <select
                             name="verticalDatum[]"
                             class="vertical-datum-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -620,9 +602,7 @@
                             <option value="EGM96">EGM96</option>
                             <option value="other">อื่น ๆ (ระบุ)</option>
                           </select>
-                          <div
-                            class="vertical-datum-other-wrapper mt-1 hidden"
-                          >
+                          <div class="vertical-datum-other-wrapper mt-2 hidden">
                             <input
                               type="text"
                               name="verticalDatumOther[]"
@@ -632,12 +612,9 @@
                             />
                           </div>
                         </div>
-
+                      
                         <div class="lg:basis-1/2 min-w-[160px]">
-                          <label
-                            class="block text-sm font-medium text-slate-700 mb-1"
-                            >9. Coordinate System</label
-                          >
+                          <label class="block text-sm font-medium text-slate-700 mb-1">9. Coordinate System</label>
                           <select
                             name="coordSys[]"
                             class="coord-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -648,7 +625,7 @@
                             <option value="UTM48N">UTM 48N</option>
                             <option value="other">อื่น ๆ (ระบุ)</option>
                           </select>
-                          <div class="coord-other-wrapper mt-1 hidden">
+                          <div class="coord-other-wrapper mt-2 hidden">
                             <input
                               type="text"
                               name="coordSysOther[]"
@@ -826,17 +803,10 @@
                       </fieldset>
 
                       <!-- 12 + 13 ในบรรทัดเดียวกัน -->
-                      <div
-                        class="flex flex-col gap-3 md:flex-row md:items-end md:flex-wrap"
-                      >
+                      <div class="flex flex-col gap-3 md:flex-row md:items-start md:flex-wrap">
                         <div class="md:flex-1 md:min-w-[220px]">
-                          <label
-                            class="block text-sm font-medium text-slate-700 mb-1"
-                            >12. ขนาดไฟล์</label
-                          >
-                          <div
-                            class="flex flex-col gap-2 sm:flex-row sm:items-center"
-                          >
+                          <label class="block text-sm font-medium text-slate-700 mb-1">12. ขนาดไฟล์</label>
+                          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
                             <div class="w-full sm:w-1/2">
                               <input
                                 type="number"
@@ -851,9 +821,7 @@
                                 name="fileSizeUnit[]"
                                 class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                               >
-                                <option value="">
-                                  -- เลือกหน่วยของขนาดข้อมูล --
-                                </option>
+                                <option value="">-- หน่วย --</option>
                                 <option value="TB">TB</option>
                                 <option value="GB">GB</option>
                                 <option value="MB">MB</option>
@@ -862,12 +830,9 @@
                             </div>
                           </div>
                         </div>
-
+                      
                         <div class="md:flex-1 md:min-w-[220px]">
-                          <label
-                            class="block text-sm font-medium text-slate-700 mb-1"
-                            >13. ลิขสิทธิ์</label
-                          >
+                          <label class="block text-sm font-medium text-slate-700 mb-1">13. ลิขสิทธิ์</label>
                           <select
                             name="license[]"
                             class="license-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -876,12 +841,10 @@
                             <option value="open">Open Data</option>
                             <option value="internal">Internal</option>
                             <option value="exchange">Exchange</option>
-                            <option value="restricted">
-                              Security Restricted
-                            </option>
+                            <option value="restricted">Security Restricted</option>
                             <option value="other">อื่น ๆ (ระบุ)</option>
                           </select>
-                          <div class="license-other-wrapper mt-1 hidden">
+                          <div class="license-other-wrapper mt-2 hidden">
                             <input
                               type="text"
                               name="licenseOther[]"
