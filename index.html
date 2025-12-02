@@ -141,7 +141,7 @@
           </div>
         </header>
 
-        <form id="demSurveyForm" class="space-y-7" novalidate>
+        <form id="demSurveyForm" class="space-y-7">
           <!-- ส่วนที่ 1 -->
           <section>
             <h2
@@ -1531,300 +1531,71 @@
         if (yearSelect) yearSelect.required = true;
       }
     
-  // -------------------- Attach handlers ให้ DEM item 1 ใบ --------------------
       function attachOtherFieldHandlers(item) {
         if (!item) return;
-
+    
         attachSectionToggles(item);
         markSectionARequired(item);
-
-        // ... (ส่วน Tag Stack Helper / Search Filter Helper เดิมคงไว้ หรือถ้าโค้ดเดิมยาวย่อไว้ก็ได้) ...
-        // เพื่อความกระชับ ผมจะข้ามส่วน Helper ของ Tag/Search ไป (เพราะไม่ได้แก้)
-        // แต่ถ้าคุณลบไปแล้ว ต้องเอา Helper functions (setupTagStack, setupSearchFilter) กลับมาใส่ในนี้ด้วยนะครับ
-        // หรือถ้า Helper functions อยู่นอก function นี้อยู่แล้ว ก็ข้ามไปดูส่วนแก้ไขด้านล่างได้เลย
-
-        // =======================================================
-        // จุดที่แก้ไข: เพิ่มบรรทัด input.required = show; ในทุกฟังก์ชัน
-        // =======================================================
-
-        // ---- 2. Source (แหล่งที่มา) ----
-        const sourceSelect = item.querySelector(".source-select");
-        const sourceOtherWrapper = item.querySelector(".source-other-wrapper");
-        const sourceOtherInput = item.querySelector(".source-other-input");
-        if (sourceSelect && sourceOtherWrapper && sourceOtherInput) {
-          sourceSelect.addEventListener("change", () => {
-            const show = sourceSelect.value === "other";
-            sourceOtherWrapper.classList.toggle("hidden", !show);
-            sourceOtherInput.disabled = !show;
-            
-            // สั่งให้เป็น Required เมื่อแสดง และเคลียร์ Error เมื่อซ่อน
-            sourceOtherInput.required = show; 
-            if (!show) {
-                sourceOtherInput.value = "";
-                clearError(sourceOtherInput);
+    
+        // ---- Tag Stack Helper ----
+        function setupTagStack(selectEl, tagsContainer, hiddenInput) {
+          if (!selectEl || !tagsContainer || !hiddenInput) return;
+          let values = [];
+        
+          function renderTags() {
+            tagsContainer.innerHTML = "";
+            values.forEach((val) => {
+              const span = document.createElement("span");
+              span.className = "tag-pill";
+              span.dataset.value = val;
+              span.innerHTML = `
+                <span class="tag-text">${val}</span>
+                <span class="tag-remove">×</span>
+              `;
+              tagsContainer.appendChild(span);
+            });
+            hiddenInput.value = values.join(", ");
+          }
+        
+          function addValue(val) {
+            const v = (val || "").trim();
+            if (!v || values.includes(v)) return;
+            values.push(v);
+            renderTags();
+          }
+        
+          function removeValue(val) {
+            const idx = values.indexOf(val);
+            if (idx === -1) return;
+            values.splice(idx, 1);
+            renderTags();
+          }
+        
+          // ดับเบิลคลิกที่ option เพื่อเพิ่มแท็ก
+          selectEl.addEventListener("dblclick", () => {
+            const opt = selectEl.options[selectEl.selectedIndex];
+            const text = opt ? opt.textContent.trim() : "";
+            if (!text) return;
+            if (values.includes(text)) {
+              removeValue(text);
             } else {
-                sourceOtherInput.focus();
+              addValue(text);
             }
           });
-          // Initial check
-          const show = sourceSelect.value === "other";
-          sourceOtherWrapper.classList.toggle("hidden", !show);
-          sourceOtherInput.disabled = !show;
-          sourceOtherInput.required = show; 
-        }
-
-        // ---- 5. Resolution (ความละเอียด) ----
-        const resSelect = item.querySelector(".resolution-select");
-        const resOtherWrapper = item.querySelector(".resolution-other-wrapper");
-        const resOtherInput = item.querySelector(".resolution-other-input");
-        if (resSelect && resOtherWrapper && resOtherInput) {
-          const updateRes = () => {
-            const show = resSelect.value === "lidar_sub1m" || resSelect.value === "other";
-            resOtherWrapper.classList.toggle("hidden", !show);
-            resOtherInput.disabled = !show;
-
-            // [แก้ไข] เพิ่ม required
-            resOtherInput.required = show; 
-            if (show) {
-                resOtherInput.focus();
-            } else {
-                resOtherInput.value = "";
-                clearError(resOtherInput); // ลบแดงออกถ้าเปลี่ยนใจไม่เลือก
-            }
-          };
-          resSelect.addEventListener("change", updateRes);
-          updateRes();
-        }
-
-        // ---- 8. Vertical Datum ----
-        const vDatumSelect = item.querySelector(".vertical-datum-select");
-        const vDatumWrapper = item.querySelector(".vertical-datum-other-wrapper");
-        const vDatumInput = item.querySelector(".vertical-datum-other-input");
-        if (vDatumSelect && vDatumWrapper && vDatumInput) {
-          const updateVD = () => {
-            const show = vDatumSelect.value === "other";
-            vDatumWrapper.classList.toggle("hidden", !show);
-            vDatumInput.disabled = !show;
-
-            // [แก้ไข] เพิ่ม required
-            vDatumInput.required = show;
-            if (show) {
-                vDatumInput.focus();
-            } else {
-                vDatumInput.value = "";
-                clearError(vDatumInput);
-            }
-          };
-          vDatumSelect.addEventListener("change", updateVD);
-          updateVD();
-        }
-
-        // ---- 9. Coordinate System ----
-        const coordSelect = item.querySelector(".coord-select");
-        const coordWrapper = item.querySelector(".coord-other-wrapper");
-        const coordInput = item.querySelector(".coord-other-input");
-        if (coordSelect && coordWrapper && coordInput) {
-          const updateCoord = () => {
-            const show = coordSelect.value === "other";
-            coordWrapper.classList.toggle("hidden", !show);
-            coordInput.disabled = !show;
-
-            // [แก้ไข] เพิ่ม required
-            coordInput.required = show;
-            if (show) {
-                coordInput.focus();
-            } else {
-                coordInput.value = "";
-                clearError(coordInput);
-            }
-          };
-          coordSelect.addEventListener("change", updateCoord);
-          updateCoord();
-        }
-
-        // ---- 13. License ----
-        const licSelect = item.querySelector(".license-select");
-        const licWrapper = item.querySelector(".license-other-wrapper");
-        const licInput = item.querySelector(".license-other-input");
-        if (licSelect && licWrapper && licInput) {
-          const updateLic = () => {
-            const show = licSelect.value === "other";
-            licWrapper.classList.toggle("hidden", !show);
-            licInput.disabled = !show;
-
-            // [แก้ไข] เพิ่ม required
-            licInput.required = show;
-            if (show) {
-                licInput.focus();
-            } else {
-                licInput.value = "";
-                clearError(licInput);
-            }
-          };
-          licSelect.addEventListener("change", updateLic);
-          updateLic();
-        }
-
-        // ... (ส่วน Coverage Group / Tag Stack / ปุ่มลบ ... โค้ดเดิมต่อจากนี้ให้คงไว้เหมือนเดิม) ...
         
-        // (เพื่อความชัวร์ นี่คือส่วนท้ายของฟังก์ชันเดิมที่ต้องคงไว้)
-        // ---- พื้นที่ครอบคลุม (เลือกทีละแบบ) ----
-        const coverageCountryCb = item.querySelector('input[name="coverageCountry[]"]');
-        // ... (Code updateCoverageGroup และอื่นๆ ด้านล่างไม่ต้องแก้) ...
-        const basinToggle = item.querySelector(".toggle-basin");
-        const provinceToggle = item.querySelector(".toggle-province");
-        const localToggle = item.querySelector(".toggle-local");
+          // ⬇⬇⬇ แก้ส่วนนี้ใหม่: ให้ลบด้วยการคลิกที่กากบาท ⬇⬇⬇
+          tagsContainer.addEventListener("click", (e) => {
+            const removeBtn = e.target.closest(".tag-remove");
+            if (!removeBtn) return;
+            e.preventDefault();
+            e.stopPropagation(); // กันไม่ให้ไปโดน checkbox ข้างหลัง
         
-        // ... (ใส่ logic updateCoverageGroup เดิมตรงนี้) ...
-        const basinBlock = item.querySelector(".basin-block");
-        const provinceBlock = item.querySelector(".province-block");
-        const localBlock = item.querySelector(".local-block");
-        const localInput = item.querySelector(".local-input");
-
-        // ฟังก์ชันจัดการ Logic พื้นที่ครอบคลุม (แก้ใหม่ตามโจทย์ข้อ 4)
-        function updateCoverageGroup() {
-             const isCountry = coverageCountryCb ? coverageCountryCb.checked : false;
-
-             // -----------------------------------------------------------
-             // กรณีที่ 1: ถ้าเลือก "ประเทศไทยทั้งหมด"
-             // -----------------------------------------------------------
-             if (isCountry) {
-                 // 1. Disable และ Uncheck อันอื่นให้หมด
-                 if (basinToggle) {
-                     basinToggle.disabled = true;
-                     basinToggle.checked = false;
-                 }
-                 if (provinceToggle) {
-                     provinceToggle.disabled = true;
-                     provinceToggle.checked = false;
-                 }
-                 if (localToggle) {
-                     localToggle.disabled = true;
-                     localToggle.checked = false;
-                 }
-
-                 // 2. ซ่อน Block ย่อยทั้งหมด
-                 if (basinBlock) basinBlock.classList.add("hidden");
-                 if (provinceBlock) provinceBlock.classList.add("hidden");
-                 if (localBlock) localBlock.classList.add("hidden");
-
-                 // 3. ล้างค่าข้อมูลภายใน (เพื่อไม่ให้ส่งไปบันทึก)
-                 // ล้างลุ่มน้ำ
-                 if (basinTags) basinTags.innerHTML = "";
-                 if (basinHidden) basinHidden.value = "";
-                 if (basinSearch) basinSearch.value = "";
-                 
-                 // ล้างจังหวัด
-                 if (provinceTags) provinceTags.innerHTML = "";
-                 if (provinceHidden) provinceHidden.value = "";
-                 if (provinceSearch) provinceSearch.value = "";
-
-                 // ล้างพื้นที่เฉพาะจุด
-                 if (localInput) {
-                     localInput.value = "";
-                     localInput.disabled = true;
-                     localInput.required = false; 
-                     clearError(localInput);
-                 }
-
-             } else {
-                 // -----------------------------------------------------------
-                 // กรณีที่ 2: ไม่ได้เลือกประเทศไทย (เลือกผสมกันได้)
-                 // -----------------------------------------------------------
-                 
-                 // 1. Enable Checkbox ที่เหลือให้กดได้
-                 if (basinToggle) basinToggle.disabled = false;
-                 if (provinceToggle) provinceToggle.disabled = false;
-                 if (localToggle) localToggle.disabled = false;
-
-                 // 2. แสดง/ซ่อน Block ตามที่ติ๊ก (เป็นอิสระต่อกัน)
-                 
-                 // --- ลุ่มน้ำ ---
-                 if (basinBlock && basinToggle) {
-                     const showBasin = basinToggle.checked;
-                     basinBlock.classList.toggle("hidden", !showBasin);
-                     // ถ้าปิด -> ล้างค่าทิ้งด้วย (เผื่อติ๊กแล้วติ๊กออก)
-                     if (!showBasin) {
-                         if (basinTags) basinTags.innerHTML = "";
-                         if (basinHidden) basinHidden.value = "";
-                         if (basinSearch) basinSearch.value = "";
-                     }
-                 }
-
-                 // --- จังหวัด ---
-                 if (provinceBlock && provinceToggle) {
-                     const showProvince = provinceToggle.checked;
-                     provinceBlock.classList.toggle("hidden", !showProvince);
-                     // ถ้าปิด -> ล้างค่าทิ้ง
-                     if (!showProvince) {
-                         if (provinceTags) provinceTags.innerHTML = "";
-                         if (provinceHidden) provinceHidden.value = "";
-                         if (provinceSearch) provinceSearch.value = "";
-                     }
-                 }
-
-                 // --- พื้นที่เฉพาะจุด ---
-                 if (localBlock && localInput && localToggle) {
-                   const showLocal = localToggle.checked;
-                   localBlock.classList.toggle("hidden", !showLocal);
-                   localInput.disabled = !showLocal;
-                   
-                   // ถ้าเปิด -> บังคับกรอก, ถ้าปิด -> ล้างค่า
-                   localInput.required = showLocal;
-
-                   if (!showLocal) {
-                       localInput.value = "";
-                       clearError(localInput);
-                   } else {
-                       // ถ้าเพิ่งเปิด ให้ Focus
-                       if (document.activeElement === localToggle) {
-                           localInput.focus();
-                       }
-                   }
-                 }
-             }
-        }
-
-        if (coverageCountryCb) coverageCountryCb.addEventListener("change", updateCoverageGroup);
-        if (basinToggle) basinToggle.addEventListener("change", updateCoverageGroup);
-        if (provinceToggle) provinceToggle.addEventListener("change", updateCoverageGroup);
-        if (localToggle) localToggle.addEventListener("change", updateCoverageGroup);
-
-        // Call Tag Stack & Search Helpers (อย่าลืมฟังก์ชัน setupTagStack, setupSearchFilter ต้องนิยามไว้นอกนี้ หรือในนี้)
-        const basinSelect = item.querySelector(".basin-select");
-        const basinTags = item.querySelector(".basin-tags");
-        const basinHidden = item.querySelector(".basin-other-input");
-        // setupTagStack(basinSelect, basinTags, basinHidden); // <-- เรียกใช้ฟังก์ชันเดิม
-
-        const provinceSelect = item.querySelector(".province-select");
-        const provinceTags = item.querySelector(".province-tags");
-        const provinceHidden = item.querySelector(".province-other-input");
-        // setupTagStack(provinceSelect, provinceTags, provinceHidden); // <-- เรียกใช้ฟังก์ชันเดิม
-
-        // Search
-        const basinSearch = item.querySelector(".basin-search");
-        // setupSearchFilter(basinSelect, basinSearch); // <-- เรียกใช้ฟังก์ชันเดิม
-        const provinceSearch = item.querySelector(".province-search");
-        // setupSearchFilter(provinceSelect, provinceSearch); // <-- เรียกใช้ฟังก์ชันเดิม
-
-        // Checkbox Flags (ข้ออื่นๆ ที่เป็น checkbox)
-        setupOtherWithFlag(item, "demMethodOtherFlag[]", "demMethodOther[]");
-        setupOtherWithFlag(item, "formatOtherFlag[]", "formatOther[]");
-        setupOtherWithFlag(item, "accessOtherFlag[]", "accessOther[]");
-        setupOtherWithFlag(item, "qcOtherFlag[]", "qcOther[]");
-        setupOtherWithFlag(item, "useOtherFlag[]", "useOther[]");
-
-        // ปุ่มลบ
-        const removeBtn = item.querySelector(".btn-remove-dem-item");
-        if (removeBtn) {
-          removeBtn.addEventListener("click", () => {
-            item.remove();
-            updateDemIndexes();
+            const pill = removeBtn.closest(".tag-pill");
+            if (!pill) return;
+            const v = pill.dataset.value;
+            removeValue(v);
           });
         }
-
-        updateCoverageGroup();
-      }
     
         // ---- Search Filter Helper ----
         function setupSearchFilter(selectEl, searchInput) {
@@ -2024,7 +1795,7 @@
     
         // เรียกครั้งแรกเพื่อจัด state เริ่มต้น
         updateCoverageGroup();
-            
+      }
     
       // -------------------- Init item แรก --------------------
       const firstItem = demContainer.querySelector(".dem-item");
@@ -2380,75 +2151,6 @@
     
         return { agency, items };
       }
-
-      function showError(input, message) {
-        // 1. เปลี่ยนเส้นขอบเป็นสีแดง
-        input.classList.add("border-red-500", "focus:border-red-500", "focus:ring-red-500");
-        input.classList.remove("border-slate-300", "focus:border-blue-500", "focus:ring-blue-500");
-
-        // 2. ตรวจสอบว่ามีข้อความ Error อยู่แล้วไหม ถ้ามีไม่เติมซ้ำ
-        const parent = input.parentElement;
-        if (!parent.querySelector(".error-text-msg")) {
-          const msg = document.createElement("p");
-          msg.className = "error-text-msg text-red-500 text-xs mt-1"; // สไตล์ข้อความสีแดง
-          msg.textContent = message;
-          parent.appendChild(msg);
-        }
-      }
-
-      // ฟังก์ชันลบ Error เมื่อ user เริ่มกรอกข้อมูล
-      function clearError(input) {
-        // 1. คืนค่าเส้นขอบเป็นสีปกติ
-        input.classList.remove("border-red-500", "focus:border-red-500", "focus:ring-red-500");
-        input.classList.add("border-slate-300", "focus:border-blue-500", "focus:ring-blue-500");
-
-        // 2. ลบข้อความ Error ทิ้ง
-        const parent = input.parentElement;
-        const msg = parent.querySelector(".error-text-msg");
-        if (msg) {
-          msg.remove();
-        }
-      }
-
-      // ฟังก์ชันตรวจสอบความถูกต้องทั้งฟอร์ม
-      function validateFormCustom() {
-        let isValid = true;
-        let firstInvalidInput = null;
-
-        // ดึง input, select, textarea ทั้งหมดที่มี attribute 'required'
-        // และต้องไม่ disabled (เพราะฟิลด์ที่ซ่อนเราสั่ง disabled ไว้แล้ว)
-        const requiredInputs = form.querySelectorAll("[required]:not([disabled])");
-
-        requiredInputs.forEach((input) => {
-          // ถ้าค่าว่าง
-          if (!input.value.trim()) {
-            showError(input, "กรุณาระบุข้อมูลในช่องนี้"); // ข้อความที่จะแสดง
-            isValid = false;
-            if (!firstInvalidInput) firstInvalidInput = input;
-            
-            // เพิ่ม Event Listener: พิมพ์แล้ว Error หายทันที
-            input.addEventListener("input", function() {
-                clearError(this);
-            }, { once: true }); // ทำงานครั้งเดียวแล้วลบ listener ออกเพื่อไม่ให้ซ้ำซ้อน
-            
-            // สำหรับ Select box ใช้ event 'change'
-            input.addEventListener("change", function() {
-                clearError(this);
-            }, { once: true });
-
-          } else {
-            clearError(input);
-          }
-        });
-
-        // ถ้ามีช่องผิด ให้เลื่อนหน้าจอไปหาช่องแรกที่ผิด
-        if (firstInvalidInput) {
-          firstInvalidInput.scrollIntoView({ behavior: "smooth", block: "center" });
-          firstInvalidInput.focus();
-        }
-
-        return isValid;
-      }
     
       async function submitToAppsScript(payload) {
         const resp = await fetch(APPS_SCRIPT_URL, {
@@ -2470,48 +2172,39 @@
     
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-
-        // 1. เรียกใช้ Custom Validation แทน form.reportValidity()
-        if (!validateFormCustom()) {
-          // ถ้าไม่ผ่าน ให้หยุดทำงานตรงนี้ (ข้อความสีแดงจะขึ้นเองจากฟังก์ชันข้างบน)
-          return; 
+    
+        // ใช้ HTML5 validation ก่อน (required / phone / อื่น ๆ)
+        if (!form.reportValidity()) {
+          return;
         }
-
-        // 2. ถ้าผ่านแล้ว ค่อยเปิด Modal ยืนยัน
+    
         openConfirmModal(
           "ยืนยันการส่งแบบฟอร์ม",
           "โปรดตรวจสอบข้อมูลให้ถูกต้อง ก่อนยืนยันการส่งแบบฟอร์ม",
           async () => {
             const payload = collectFormData();
             try {
-              // เพิ่ม Loading state หรือ disable ปุ่มตรงนี้ก็ได้ถ้าต้องการ
               const res = await submitToAppsScript(payload);
-
+    
+              // ถ้าสำเร็จ แสดง popup ตรงกลาง
               if (res && res.success) {
                 openSuccessModal();
               } else {
                 alert("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
               }
-
-              // Reset Form logic... (เหมือนเดิม)
+    
+              // reset form กลับไปเหลือ DEM 1 ชุด
               form.reset();
-              // ลบ Error แดงค้างเก่า (ถ้ามี)
-              form.querySelectorAll(".error-text-msg").forEach(e => e.remove());
-              form.querySelectorAll(".border-red-500").forEach(e => {
-                  e.classList.remove("border-red-500");
-                  e.classList.add("border-slate-300");
-              });
-
               const items = demContainer.querySelectorAll(".dem-item");
               items.forEach((item, idx) => {
                 if (idx > 0) item.remove();
               });
-
+    
               const first = demContainer.querySelector(".dem-item");
               if (first) {
                 attachOtherFieldHandlers(first);
               }
-
+    
               populateYearSelects();
               updateDemIndexes();
               applyReferenceDataToAllItems();
