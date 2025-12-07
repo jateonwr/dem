@@ -178,8 +178,11 @@
             // 1. Toggles (Section visibility)
             FormHandler.setupSectionToggles(item);
             
+            // Year Range Logic
+            FormHandler.setupYearRange(item);
+            
             // 2. Required Fields in Item
-            const reqs = ['input[name="demName[]"]', 'select[name="sourceType[]"]', 'select[name="year[]"]'];
+            const reqs = ['input[name="demName[]"]', 'select[name="sourceType[]"]', 'select[name="yearStart[]"]', 'select[name="yearEnd[]"]'];
             reqs.forEach(sel => { const el = item.querySelector(sel); if(el) el.required = true; });
 
             // 3. Numeric Fields
@@ -238,6 +241,41 @@
             // 7. Remove Button
             const rmBtn = item.querySelector(".btn-remove-dem-item");
             if (rmBtn) rmBtn.addEventListener("click", () => { item.remove(); FormHandler.updateIndexes(); });
+          },
+
+          setupYearRange: (item) => {
+             const startSel = item.querySelector('.year-start-select');
+             const endSel = item.querySelector('.year-end-select');
+             if(!startSel || !endSel) return;
+
+             const updateEndOptions = () => {
+                const startVal = parseInt(startSel.value);
+                const currentEnd = parseInt(endSel.value);
+                
+                // Requirement: If Start not selected, End is disabled
+                if (isNaN(startVal)) {
+                   endSel.disabled = true;
+                   endSel.value = "";
+                   return;
+                }
+                endSel.disabled = false;
+                
+                // Requirement: End >= Start
+                Array.from(endSel.options).forEach(opt => {
+                   if (!opt.value) return; // placeholder
+                   const y = parseInt(opt.value);
+                   opt.disabled = y < startVal;
+                   opt.hidden = opt.disabled; // Also hide
+                });
+
+                // If currently selected end is now invalid, reset it
+                if (!isNaN(currentEnd) && currentEnd < startVal) {
+                   endSel.value = "";
+                }
+             };
+
+             startSel.addEventListener("change", updateEndOptions);
+             updateEndOptions(); // Initial run
           },
 
           setupSectionToggles: (item) => {
@@ -414,15 +452,16 @@
           },
 
           populateYears: () => {
-            const selects = document.querySelectorAll(".year-select");
-            selects.forEach(sel => {
-              if (sel.options.length > 1) return;
-              for (let y = CONFIG.YEAR_END; y >= CONFIG.YEAR_START; y--) {
-                const opt = document.createElement("option");
-                opt.value = y; opt.textContent = y.toString();
-                sel.appendChild(opt);
-              }
-              sel.classList.add("text-sm");
+            // Target specific classes for start and end
+            ['.year-start-select', '.year-end-select'].forEach(cls => {
+               document.querySelectorAll(cls).forEach(sel => {
+                 if (sel.options.length > 1) return;
+                 for (let y = CONFIG.YEAR_END; y >= CONFIG.YEAR_START; y--) {
+                   const opt = document.createElement("option");
+                   opt.value = y; opt.textContent = y.toString();
+                   sel.appendChild(opt);
+                 }
+               });
             });
           },
 
@@ -599,7 +638,18 @@
               const srcSel = item.querySelector('select[name="sourceType[]"]');
               d.sourceType = (srcSel?.value === 'other') ? getVal(item, 'input[name="sourceOther[]"]') : (srcSel?.value || "");
               
-              d.year = getVal(item, 'select[name="year[]"]');
+              const yearStart = getVal(item, 'select[name="yearStart[]"]');
+              const yearEnd = getVal(item, 'select[name="yearEnd[]"]');
+
+              if (yearStart && yearEnd && yearStart !== yearEnd) {
+                  d.year = `${yearStart}-${yearEnd}`;
+              } else if (yearStart) {
+                  d.year = yearStart;
+              } else if (yearEnd) {
+                  d.year = yearEnd;
+              } else {
+                  d.year = "";
+              }
 
               // Coverage
               const rawCountry = getCheck(item, 'input[name="coverageCountry[]"]');

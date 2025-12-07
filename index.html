@@ -118,24 +118,30 @@
                     </div>
                     <div class="section-body space-y-3">
                       <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
-                        <div class="sm:flex-1">
+                        <div class="sm:basis-[48%] min-w-[200px] flex-1">
                           <label class="block text-sm font-medium text-slate-700 mb-1">1. ชื่อชุดข้อมูล DEM</label>
-                          <input type="text" name="demName[]" class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="เช่น LiDAR พ.ศ. 2566 พื้นที่ลุ่มน้ำบางปะกง หรือชื่อโครงการจัดทำ DEM" />
+                          <input type="text" name="demName[]" class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุชื่อชุดข้อมูล" />
                         </div>
-                        <div class="sm:basis-[30%]">
+                        <div class="sm:basis-[28%] min-w-[150px]">
                           <label class="block text-sm font-medium text-slate-700 mb-1">2. แหล่งที่มา/ผู้ผลิตข้อมูล</label>
                           <select name="sourceType[]" class="source-select block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">-- เลือกแหล่งที่มา --</option><option value="self">หน่วยงานผลิตเอง</option><option value="rtsd">กรมแผนที่ทหาร</option><option value="gistda">GISTDA</option><option value="ldd">กรมพัฒนาที่ดิน</option><option value="other">อื่น ๆ (ระบุ)</option>
+                             <option value="">-- เลือกแหล่งที่มา --</option><option value="self">หน่วยงานผลิตเอง</option><option value="rtsd">กรมแผนที่ทหาร</option><option value="gistda">GISTDA</option><option value="ldd">กรมพัฒนาที่ดิน</option><option value="other">อื่น ๆ (ระบุ)</option>
                           </select>
                           <div class="source-other-wrapper mt-2 hidden">
                             <input type="text" name="sourceOther[]" class="source-other-input block w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ระบุหน่วยงาน / บริษัท" disabled />
                           </div>
                         </div>
-                        <div class="sm:basis-[10%] sm:max-w-[96px]">
-                          <label class="block text-sm font-medium text-slate-700 mb-1">3. ปีจัดทำ</label>
-                          <select name="year[]" class="year-select block w-full rounded-md border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">พ.ศ.</option>
-                          </select>
+                        <div class="sm:basis-[22%] min-w-[140px]">
+                          <label class="block text-sm font-medium text-slate-700 mb-1">3. ปีจัดทำ (พ.ศ.)</label>
+                          <div class="flex items-center gap-1">
+                             <select name="yearStart[]" class="year-start-select block w-full rounded-md border border-slate-300 bg-white px-0.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                               <option value="">-- จาก --</option>
+                             </select>
+                             <span class="text-slate-500 text-sm">-</span>
+                             <select name="yearEnd[]" class="year-end-select block w-full rounded-md border border-slate-300 bg-white px-0.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                               <option value="">-- ถึง --</option>
+                             </select>
+                          </div>
                         </div>
                       </div>
 
