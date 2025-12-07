@@ -274,20 +274,6 @@
 
           setupCoverageLogic: (item) => {
              const els = {
-               country: item.querySelector('input[name="coverageCountry[]"]'),
-               basinToggle: item.querySelector(".toggle-basin"),
-               provToggle: item.querySelector(".toggle-province"),
-               localToggle: item.querySelector(".toggle-local"),
-               basinBlock: item.querySelector(".basin-block"),
-               provBlock: item.querySelector(".province-block"),
-               localBlock: item.querySelector(".local-block"),
-               localInput: item.querySelector(".local-input"),
-               basinTags: item.querySelector(".basin-tags"),
-               provTags: item.querySelector(".province-tags"),
-               basinHidden: item.querySelector(".basin-other-input"),
-               provHidden: item.querySelector(".province-other-input"),
-               basinSelect: item.querySelector(".basin-select"),
-               provSelect: item.querySelector(".province-select")
              };
 
              // Tag Stack Logic
@@ -319,23 +305,88 @@
                 const isCountry = els.country && els.country.checked;
                 if (isCountry) {
                    [els.basinToggle, els.provToggle, els.localToggle].forEach(el => { if(el) { el.checked = false; el.disabled = true; }});
-                   [els.basinBlock, els.provBlock, els.localBlock].forEach(el => el && el.classList.add("hidden"));
+                   if(els.basinBlock) els.basinBlock.classList.add("hidden");
+                   if(els.provBlock) els.provBlock.classList.add("hidden");
+                   
+                   // Specific Area Reset
+                   if(els.localContainer) els.localContainer.classList.add("hidden");
+                   if(els.btnAddLocal) els.btnAddLocal.classList.add("hidden");
+                   
                    if(els.basinTags) els.basinTags.innerHTML = "";
                    if(els.provTags) els.provTags.innerHTML = "";
                    if(els.basinHidden) els.basinHidden.value = "";
                    if(els.provHidden) els.provHidden.value = "";
-                   if(els.localInput) { els.localInput.value = ""; els.localInput.disabled = true; Utils.clearError(els.localInput); }
+                   
+                   // Disable all local inputs
+                   if(els.localContainer) {
+                     els.localContainer.querySelectorAll(".local-input").forEach(inp => {
+                       inp.value = "";
+                       inp.disabled = true;
+                       Utils.clearError(inp);
+                     });
+                   }
+
                 } else {
                    [els.basinToggle, els.provToggle, els.localToggle].forEach(el => { if(el) el.disabled = false; });
                    if(els.basinBlock) els.basinBlock.classList.toggle("hidden", !els.basinToggle.checked);
                    if(els.provBlock) els.provBlock.classList.toggle("hidden", !els.provToggle.checked);
+                   
                    const showLocal = els.localToggle.checked;
-                   if(els.localBlock) els.localBlock.classList.toggle("hidden", !showLocal);
-                   if(els.localInput) { 
-                      els.localInput.disabled = !showLocal; 
-                      if(!showLocal) { els.localInput.value = ""; Utils.clearError(els.localInput); }
+                   if(els.localContainer) els.localContainer.classList.toggle("hidden", !showLocal);
+                   if(els.btnAddLocal) els.btnAddLocal.classList.toggle("hidden", !showLocal);
+
+                   if(els.localContainer) {
+                      els.localContainer.querySelectorAll(".local-input").forEach(inp => {
+                        inp.disabled = !showLocal;
+                        if (!showLocal) {
+                          inp.value = "";
+                          Utils.clearError(inp);
+                        }
+                      });
                    }
                 }
+             };
+
+             // Dynamic Rows Logic for Local Area
+             if (els.btnAddLocal && els.localContainer) {
+                // Add Button
+                els.btnAddLocal.addEventListener("click", () => {
+                   const firstRow = els.localContainer.querySelector(".local-row");
+                   if(firstRow) {
+                      const clone = firstRow.cloneNode(true);
+                      const inp = clone.querySelector(".local-input");
+                      inp.value = "";
+                      Utils.clearError(inp);
+                      // inp.disabled = false; // Should be already false if container is visible
+                      els.localContainer.appendChild(clone);
+                      updateLocalRowsState();
+                   }
+                });
+
+                // Remove Button (Delegation)
+                els.localContainer.addEventListener("click", (e) => {
+                   const btn = e.target.closest(".btn-remove-local");
+                   if (btn) {
+                      const row = btn.closest(".local-row");
+                      if (row && els.localContainer.querySelectorAll(".local-row").length > 1) {
+                         row.remove();
+                         updateLocalRowsState();
+                      }
+                   }
+                });
+             }
+
+             const updateLocalRowsState = () => {
+                if(!els.localContainer) return;
+                const rows = els.localContainer.querySelectorAll(".local-row");
+                rows.forEach(row => {
+                   const btn = row.querySelector(".btn-remove-local");
+                   if(btn) {
+                      btn.disabled = (rows.length === 1);
+                      btn.classList.toggle("text-slate-300", rows.length === 1);
+                      btn.classList.toggle("text-slate-400", rows.length > 1);
+                   }
+                });
              };
 
              [els.country, els.basinToggle, els.provToggle, els.localToggle].forEach(el => el && el.addEventListener("change", updateState));
@@ -401,9 +452,17 @@
              if(first) {
                 first.querySelectorAll(".basin-tags, .province-tags").forEach(e => e.innerHTML = "");
                 first.querySelectorAll(".basin-other-input, .province-other-input").forEach(e => e.value = "");
-                first.querySelectorAll(".basin-block, .province-block, .local-block").forEach(e => e.classList.add("hidden"));
-                const localIn = first.querySelector(".local-input");
-                if(localIn) { localIn.disabled = true; Utils.clearError(localIn); }
+                first.querySelectorAll(".basin-block, .province-block").forEach(e => e.classList.add("hidden"));
+                first.querySelectorAll(".local-container").forEach(c => {
+                  c.classList.add("hidden");
+                  // Remove extra rows
+                  const rows = c.querySelectorAll(".local-row");
+                  rows.forEach((r, idx) => { if(idx > 0) r.remove(); });
+                });
+                const localBtn = first.querySelector(".btn-add-local");
+                if(localBtn) localBtn.classList.add("hidden");
+
+                first.querySelectorAll(".local-input").forEach(inp => { inp.disabled = true; inp.value = ""; Utils.clearError(inp); });
                 
                 // Re-attach to ensure state consistency
                 FormHandler.attachEvents(first);
@@ -440,7 +499,24 @@
               if(inp) inp.disabled = true;
            });
            // Re-hide blocks
-           clone.querySelectorAll(".basin-block, .province-block, .local-block").forEach(e => e.classList.add("hidden"));
+           clone.querySelectorAll(".basin-block, .province-block").forEach(e => e.classList.add("hidden"));
+           
+           // Handle specific area clone
+           const localCont = clone.querySelector(".local-container");
+           if(localCont) {
+             localCont.classList.add("hidden");
+             // Clean extra rows in clone
+             const rows = localCont.querySelectorAll(".local-row");
+             rows.forEach((r, idx) => { if (idx > 0) r.remove(); });
+             const inp = localCont.querySelector(".local-input");
+             if(inp) { inp.value = ""; inp.disabled = true; }
+             
+             // Reset remove button state
+             const rmBtn = localCont.querySelector(".btn-remove-local");
+             if(rmBtn) { rmBtn.disabled = true; rmBtn.classList.add("text-slate-300"); }
+           }
+           const btnAddLocal = clone.querySelector(".btn-add-local");
+           if(btnAddLocal) btnAddLocal.classList.add("hidden");
            
            els.container.appendChild(clone);
            FormHandler.attachEvents(clone);
@@ -510,7 +586,10 @@
               d.coverageCountry = rawCountry.map(v => v === 'thailand_all' ? 'ทั่วประเทศ' : v);
               d.coverageBasinTags = getVal(item, '.basin-other-input');
               d.coverageProvinceTags = getVal(item, '.province-other-input');
-              d.coverageLocal = getVal(item, 'input[name="coverageLocal[]"]');
+              
+              const localInputs = item.querySelectorAll('input[name="coverageLocal[]"]');
+              const localVals = Array.from(localInputs).map(i => i.value.trim()).filter(v => v !== "");
+              d.coverageLocal = localVals.join(", ");
 
               // Tech
               const resSel = item.querySelector('select[name="resolution[]"]');
