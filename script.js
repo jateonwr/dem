@@ -352,7 +352,7 @@
                    if(els.provBlock) els.provBlock.classList.toggle("hidden", !provChecked);
                    
                    if(els.localContainer) els.localContainer.classList.toggle("hidden", !localChecked);
-The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
                    if(els.btnAddLocal) els.btnAddLocal.classList.toggle("hidden", !localChecked);
 
                    if(els.localContainer) {
